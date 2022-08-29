@@ -10,22 +10,22 @@ We can list the reasons behind the choices we made technically.
 ## Routes handled
 
 ### Session / Auth
-* '/'                           => login (landing page)
-* '/sessions/goodbye'           => logout current user
-* '/auth/:provider/callback'    => OAuth callback (google)
-* '/auth/failure'               => Failed OAuth
+* `/`                           => login (landing page)
+* `/sessions/goodbye`           => logout current user
+* `/auth/:provider/callback`    => OAuth callback (google)
+* `/auth/failure`               => Failed OAuth
 
 ### Client Routes
 
 #### Pools
-* '/pools/index'                => Main page, after login
+* `/pools/index`                => Main page, after login
 
 #### Poolers
-* '/poolers/show'               => Return current pooler info
-* '/poolers/new'                => Create new pooler
-* '/poolers/update'             => Failed OAuth
+* `/poolers/show`               => Return current pooler info
+* `/poolers/new`                => Create new pooler
+* `/poolers/update`             => Failed OAuth
 
 #### Picks
-* '/picks/show/:id'             => Return picks info
-* '/picks/search/:season/:week' => Search for picks
-* '/picks/new/:season/:week'    => Create new picks
+* `/picks/show/:id`             => Return picks info
+* `/picks/search/:season/:week` => Search for picks
+* `/picks/new/:season/:week`    => Create new picks

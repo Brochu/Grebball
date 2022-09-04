@@ -1,10 +1,10 @@
+import os
+
 from dotenv import load_dotenv
 from flask import Flask, render_template
-from pymongo import MongoClient
 
 from football import GetWeek
-
-import os
+from database import GetPoolers
 
 app = Flask(__name__)
 
@@ -18,20 +18,7 @@ def getWeek(season, week):
 
 @app.route('/poolers', methods=['GET'])
 def getPoolers():
-    client = MongoClient(os.environ.get('MONGO_URL'))
-
-    db = client.pool_football_app_dev
-    collection = db.poolers
-    alex = collection.find({ 'name': 'Alex' })[0]
-
-    coll = db.picks
-    picks = coll.find({ 'pooler_id': alex.get('_id') })
-
-    result = []
-    for p in picks:
-        result.append(p['pickstring'])
-
-    return result
+    return GetPoolers();
 
 if __name__ == "__main__":
     load_dotenv()

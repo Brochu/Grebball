@@ -15,4 +15,4 @@ COPY . /app
 
 # Config the container
 ENTRYPOINT [ "python" ]
-CMD [ "view.py" ]
+CMD [ "app.py" ]

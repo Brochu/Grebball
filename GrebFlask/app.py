@@ -1,10 +1,10 @@
 from dotenv import load_dotenv
 from flask import Flask, render_template
-
 from pymongo import MongoClient
 
+from football import GetWeek
+
 import os
-import requests
 
 app = Flask(__name__)
 
@@ -14,28 +14,7 @@ def home():
 
 @app.route('/week/<season>/<week>', methods=['GET'])
 def getWeek(season, week):
-    url = "https://www.thesportsdb.com/api/v1/json/2/eventsround.php"
-
-    # Gets the results for a given season and week
-    # 01 - 18: Regular season
-    # 19 - 21: Post season
-    # 22: Final game (SuperBowl)
-
-    # Special handling of round values for TheSportDB
-    if week == '19':
-        realWeek = 160
-    elif week == '20':
-        realWeek = 125
-    elif week == '21':
-        realWeek = 150
-    elif week == '22':
-        realWeek = 200
-    else:
-        realWeek = week;
-
-    params = { 'id': 4391, 'r': realWeek, 's': season }
-    req = requests.get(url = url, params = params)
-    return req.json()
+    return GetWeek(season, week)
 
 @app.route('/poolers', methods=['GET'])
 def getPoolers():

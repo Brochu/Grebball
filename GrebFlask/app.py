@@ -1,24 +1,22 @@
 import os
+import bson
 
 from dotenv import load_dotenv
 from flask import Flask, render_template
 
-from football import GetWeek
-from database import GetPoolers
+from pools import PoolsBlueprint
+from picks import PicksBlueprint
+
+#TODO: Remove this later, for testing only
+TestPoolerId = bson.ObjectId('5f70f0ffd8e2db255c9a0df6')
 
 app = Flask(__name__)
+app.register_blueprint(PoolsBlueprint)
+app.register_blueprint(PicksBlueprint)
 
 @app.route('/')
 def home():
     return render_template('index.html')
-
-@app.route('/week/<season>/<week>', methods=['GET'])
-def getWeek(season, week):
-    return GetWeek(season, week)
-
-@app.route('/poolers', methods=['GET'])
-def getPoolers():
-    return GetPoolers();
 
 if __name__ == "__main__":
     load_dotenv()

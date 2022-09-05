@@ -1,14 +1,10 @@
 import os
-import bson
 
 from dotenv import load_dotenv
 from flask import Flask, render_template
 
 from pools import PoolsBlueprint
 from picks import PicksBlueprint
-
-#TODO: Remove this later, for testing only
-TestPoolerId = bson.ObjectId('5f70f0ffd8e2db255c9a0df6')
 
 app = Flask(__name__)
 app.register_blueprint(PoolsBlueprint)

@@ -15,18 +15,19 @@ We can list the reasons behind the choices we made technically.
 * `/auth/:provider/callback`      => OAuth callback (google)
 * `/auth/failure`                 => Failed OAuth
 
------------------------------------
-
+### Pools
 * `/home`                         => Main page, results and picks for latest week
 * `/home/:season/:week`           => Main page, results and picks for given week
 
-* `/picks/:season/:week`          => Show picks for all poolers for a given week
+### Picks
 * `/picks/new/:season/:week`      => Create new picks for a given week
 
 ## Backend API Routes
 
+### Pools
 * `/pools`                        => List results for the latest week
 * `/pools/:season/:week`          => List results for a given week
 
+### Pools
 * `/picks/:season/:week`          => Get info for picks of given week
 * `/picks/create/:season/:week`   => Create new picks entry for given week

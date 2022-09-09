@@ -8,7 +8,11 @@
 
     <body>
         <h1>Homepage - Show the results for the latest week</h1>
-        <p>{{ pooler }}</p>
+        <ol>
+        {% for pooler in poolers %}
+            <li>{{pooler['name']}} => {{pooler['favTeam']}}</li>
+        {% endfor %}
+        </ol>
 
         {% for k, v in picks.items() %}
         <p>
@@ -16,9 +20,17 @@
         </p>
         {% endfor %}
 
+        {% for k, v in allpicks.items() %}
+        <p>
+            {{ k }} : {{ v }}
+        </p>
+        {% endfor %}
+
         {% for match in weekdata %}
         <p>
-            {{ match }}
+        <img src="{{ url_for('static', filename=GetTeamShortName(match["strAwayTeam"]) + '.png') }}" width="30px"/>
+        vs.
+        <img src="{{ url_for('static', filename=GetTeamShortName(match["strHomeTeam"]) + '.png') }}" width="30px"/>
         </p>
         {% endfor %}
     </body>

@@ -16,14 +16,20 @@ def index():
     [season, week] = FindCurrentWeek()
     # pooler = loads(session['pooler'])
 
-    picks = DB.picks.find({
+    picks = list(DB.picks.find({
         'pooler_id': pooler['_id'],
-        'season': season,
-        'week': week,
-    })[0]
+        'season': int(season),
+        'week': int(week)
+    }))
 
-    picksdata = loads(picks['pickstring'])
-    return render_template('home.html', pooler = pooler, picks = picksdata)
+    if len(picks) > 0:
+        picksdata = loads(picks[0]['pickstring'])
+    else:
+        picksdata = {}
+
+    weekdata = GetWeek(season, week)['events']
+
+    return render_template('home.html', pooler = pooler, picks = picksdata, weekdata = weekdata)
 
 @PoolsBlueprint.route('/pools/<season>/<week>')
 def get(season, week):

@@ -8,10 +8,17 @@
 
     <body>
         <h1>Homepage - Show the results for the latest week</h1>
+        <p>{{ pooler }}</p>
 
         {% for k, v in picks.items() %}
         <p>
             {{ k }} : {{ v }}
+        </p>
+        {% endfor %}
+
+        {% for match in weekdata %}
+        <p>
+            {{ match }}
         </p>
         {% endfor %}
     </body>

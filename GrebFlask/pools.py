@@ -1,13 +1,20 @@
 from bson.json_util import loads
+from bson import ObjectId
 from flask import Blueprint, session, render_template
+
 from database import DB
+from football import GetWeek
 
 PoolsBlueprint = Blueprint('pools_blueprint', __name__)
+
+#TODO: Remove test user
+poolerid = ObjectId('5f70f0ffd8e2db255c9a0df6')
+pooler = DB.poolers.find({ '_id': poolerid })[0]
 
 @PoolsBlueprint.route('/pools')
 def index():
     [season, week] = FindCurrentWeek()
-    pooler = loads(session['pooler'])
+    # pooler = loads(session['pooler'])
 
     picks = DB.picks.find({
         'pooler_id': pooler['_id'],
@@ -16,11 +23,24 @@ def index():
     })[0]
 
     picksdata = loads(picks['pickstring'])
-    return render_template('home.html', picks = picksdata)
+    return render_template('home.html', pooler = pooler, picks = picksdata)
 
 @PoolsBlueprint.route('/pools/<season>/<week>')
 def get(season, week):
-    return f'Getting the pools results for season = {season} & week = {week}'
+    picks = list(DB.picks.find({
+        'pooler_id': pooler['_id'],
+        'season': int(season),
+        'week': int(week)
+    }))
+
+    if len(picks) > 0:
+        picksdata = loads(picks[0]['pickstring'])
+    else:
+        picksdata = {}
+
+    weekdata = GetWeek(season, week)['events']
+
+    return render_template('home.html', pooler = pooler, picks = picksdata, weekdata = weekdata)
 
 def FindCurrentWeek():
     seasonPipeline = [{

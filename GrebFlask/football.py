@@ -101,12 +101,12 @@ def GetWeek(season, week):
 
     params = { 'id': 4391, 'r': realWeek, 's': season }
     result = requests.get(url = url, params = params).json()
-    for m in result['events']:
-        away = GetTeamShortName(m['strAwayTeam'])
-        home = GetTeamShortName(m['strHomeTeam'])
-        print(f' : {m["idEvent"]} => {away} vs. {home}')
+    # for m in result['events']:
+    #     away = GetTeamShortName(m['strAwayTeam'])
+    #     home = GetTeamShortName(m['strHomeTeam'])
+    #     print(f' : {m["idEvent"]} => {away} vs. {home}')
 
-    return result;
+    return result['events'];
 
 def GetWeekName(week_num):
     if (type(week_num) == str):

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Grebball - Homepage</title>
+    </head>
+
+    <body>
+        <h1>Homepage - Show the results for the latest week</h1>
+
+        {% for k, v in picks.items() %}
+        <p>
+            {{ k }} : {{ v }}
+        </p>
+        {% endfor %}
+    </body>
+</html>

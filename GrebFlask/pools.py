@@ -1,18 +1,22 @@
-import bson
-
-from flask import Blueprint
+from bson.json_util import loads
+from flask import Blueprint, session, render_template
 from database import DB
-
-#TODO: Remove this later, for testing only
-TestPoolerId = bson.ObjectId('5f70f0ffd8e2db255c9a0df6')
-TestPoolId = bson.ObjectId('5f5f04b4d8e2db1ba4200218')
 
 PoolsBlueprint = Blueprint('pools_blueprint', __name__)
 
 @PoolsBlueprint.route('/pools')
 def index():
     [season, week] = FindCurrentWeek()
-    return f'Getting the pools results for season = {season} & week = {week}'
+    pooler = loads(session['pooler'])
+
+    picks = DB.picks.find({
+        'pooler_id': pooler['_id'],
+        'season': season,
+        'week': week,
+    })[0]
+
+    picksdata = loads(picks['pickstring'])
+    return render_template('home.html', picks = picksdata)
 
 @PoolsBlueprint.route('/pools/<season>/<week>')
 def get(season, week):

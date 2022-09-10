@@ -27,37 +27,9 @@ def index():
             'week': week
         })[0]['pickstring'])
 
-    allscores = {}
-    for pid, picks in allpicks.items():
-        for match in weekdata:
-            hscore = match['intHomeScore']
-            ascore = match['intAwayScore']
+    allscores = CalcWeekResults(weekdata, allpicks, week)
 
-            hwin = hscore > ascore
-            tied = hscore == ascore
-
-            hpick = picks[match['idEvent']] == GetTeamShortName(match['strHomeTeam'])
-            rightpick = (hwin and hpick) or (not(hwin) and not(hpick))
-
-            others = []
-            for i, innerpicks in allpicks.items():
-                if i == pid: continue
-
-                others.append(innerpicks[match['idEvent']])
-            unique = not(picks[match['idEvent']] in others)
-
-            if not(pid in allscores):
-                allscores[pid] = {}
-
-            if tied:
-                allscores[pid][match['idEvent']] = 1
-            elif rightpick and unique:
-                allscores[pid][match['idEvent']] = 3
-            elif rightpick:
-                allscores[pid][match['idEvent']] = 2
-            else:
-                allscores[pid][match['idEvent']] = 0
-
+    #TODO: Fix this with post season
     bgcolors = ['red', 'gray', 'green', 'yellow']
 
     return render_template('home.html',
@@ -109,9 +81,38 @@ def FindCurrentWeek():
 
     return maxseason, maxweek
 
-def CalcWeekResults(matches, picks, week):
-    temp = { 'm': matches, 'p': picks, 'w': week }
-    return temp
+def CalcWeekResults(matches, allpicks, week):
+    allscores = {}
+    for pid, picks in allpicks.items():
+        for match in matches:
+            hscore = match['intHomeScore']
+            ascore = match['intAwayScore']
+
+            hwin = hscore > ascore
+            tied = hscore == ascore
+
+            hpick = picks[match['idEvent']] == GetTeamShortName(match['strHomeTeam'])
+            rightpick = (hwin and hpick) or (not(hwin) and not(hpick))
+
+            others = []
+            for i, innerpicks in allpicks.items():
+                if i == pid: continue
+
+                others.append(innerpicks[match['idEvent']])
+            unique = not(picks[match['idEvent']] in others)
+
+            if not(pid in allscores):
+                allscores[pid] = {}
+
+            if tied:
+                allscores[pid][match['idEvent']] = 1
+            elif rightpick and unique:
+                allscores[pid][match['idEvent']] = int(GetCorrectScore(week) * 1.5)
+            elif rightpick:
+                allscores[pid][match['idEvent']] = GetCorrectScore(week)
+            else:
+                allscores[pid][match['idEvent']] = 0
+    return allscores
 
 def GetCorrectScore(week_num):
     if (type(week_num) == str):
@@ -124,62 +125,3 @@ def GetCorrectScore(week_num):
     elif n == 21: return 8
     elif n == 22: return 10
     else:         return 2
-
-###################################
-# Python version here
-###################################
-# def PrintPoolerPicks():
-#     # Find all other pool members' ids
-#     otherpoolerids = list(map(lambda x: x['_id'], list(DB.poolers.find({ 'pool_id': pooler['pool_id'] }))))
-#     otherpoolerids.remove(pooler['_id'])
-#     # Print picks found in the DB
-#     picks = json.loads(possiblepicks[0]['pickstring'])
-#
-#     otherpicks = {}
-#     for otherid in otherpoolerids:
-#         foundpicks = list(DB.picks.find({
-#             'pooler_id': otherid,
-#             'season': season,
-#             'week': weeknum,
-#         }))
-#
-#         jsonpicks = json.loads(foundpicks[0]['pickstring'])
-#         for k in jsonpicks:
-#             if not(k in otherpicks):
-#                 otherpicks[k] = []
-#             otherpicks[k].append(jsonpicks[k])
-#
-#     uniquepicks = {}
-#     for k in picks:
-#         uniquepicks[k] = not(picks[k] in otherpicks[k])
-#
-#     score = 0
-#     for match in week:
-#         hscore = int(match['intHomeScore'])
-#         ascore = int(match['intAwayScore'])
-#
-#         hwin = hscore > ascore
-#         tied = hscore == ascore
-#
-#         hpick = picks[match['idEvent']] == GetTeamShortName(match["strHomeTeam"])
-#         rightpick = (hwin and hpick) or (not(hwin) and not(hpick))
-#
-#         if tied:
-#             hwinstr = "-"
-#             awinstr = "-"
-#
-#             score = score + 1
-#         else:
-#             hwinstr = "*" if hwin else " "
-#             awinstr = " " if hwin else "*"
-#
-#             if rightpick and uniquepicks[match['idEvent']]:
-#                 score = score + int(GetWinScore(weeknum) * 1.5)
-#             elif rightpick:
-#                 score = score + GetWinScore(weeknum)
-#
-#         print(f'\t{awinstr} [{" " if hpick else "X"}] {ascore} {match["strAwayTeam"]}')
-#         print(f'\t{hwinstr} [{"X" if hpick else " "}] {hscore} {match["strHomeTeam"]}')
-#         print()
-#
-#     print(f'Score pour: {GetWeekLongName(weeknum)} de la saison {season} => {score}')

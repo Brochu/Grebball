@@ -3,7 +3,7 @@ from bson import ObjectId
 from flask import Blueprint, session, render_template
 
 from database import DB
-from football import GetWeek, GetTeamShortName
+from football import GetWeek, GetTeamShortName, GetWeekLongName
 
 PoolsBlueprint = Blueprint('pools_blueprint', __name__)
 
@@ -15,36 +15,28 @@ def index():
     [season, week] = FindCurrentWeek()
     # pooler = loads(session['pooler'])
     pooler = DB.poolers.find({ '_id': poolerid })[0]
-
+    pool = DB.pools.find({ '_id': pooler['pool_id'] })[0]
     poolers = list(DB.poolers.find({ 'pool_id': pooler['pool_id'] }))
-
-    picks = list(DB.picks.find({
-        'pooler_id': pooler['_id'],
-        'season': int(season),
-        'week': int(week)
-    }))
 
     allpicks = {}
     for p in poolers:
-        allpicks[p['name']] = loads(DB.picks.find({
+        allpicks[p['_id']] = loads(DB.picks.find({
             'pooler_id': p['_id'],
             'season': int(season),
             'week': int(week)
         })[0]['pickstring'])
 
-    if len(picks) > 0:
-        picksdata = loads(picks[0]['pickstring'])
-    else:
-        picksdata = {}
-
     weekdata = GetWeek(season, week)
 
     return render_template('home.html',
         GetTeamShortName = GetTeamShortName,
-        poolers = poolers,
-        picks = picksdata,
-        allpicks = allpicks,
+        GetWeekLongName = GetWeekLongName,
+        season = season,
+        week = week,
+        pooldata = pool,
         weekdata = weekdata,
+        poolers = poolers,
+        picksdata = allpicks,
     )
 
 @PoolsBlueprint.route('/pools/<season>/<week>')
@@ -102,82 +94,6 @@ def GetCorrectScore(week_num):
 ###################################
 # Ruby version here
 ###################################
-# class PoolsController < ApplicationController
-#   before_action :set_pool, only: [:show, :edit, :update, :destroy]
-#
-#   # GET /pools
-#   # GET /pools.json
-#   def index
-#     user = User.where(token: session[:user_token]).first
-#     if user.nil?
-#       redirect_to '/'
-#       return
-#     end
-#
-#     @pool = Pooler.where(user_id: user.id).first.pool
-#     @poolers = @pool.poolers.to_a
-#
-#     if !params[:season].nil? && !params[:week].nil?
-#       @week_info = {
-#         season: params[:season],
-#         week: params[:week]
-#       }
-#     else
-#       @week_info = find_current_week(@poolers)
-#     end
-#
-#     if params[:season_total].nil?
-#       @week_data = get_week(@week_info[:season].to_s, @week_info[:week].to_s)['events'].map do |x|
-#         x[:home_code] = get_shortname(x['strHomeTeam'])
-#         x[:home_won] = x['intHomeScore'].to_i > x['intAwayScore'].to_i
-#
-#         x[:away_code] = get_shortname(x['strAwayTeam'])
-#         x[:away_won] = x['intAwayScore'].to_i > x['intHomeScore'].to_i
-#         x
-#       end
-#       picks_data = @poolers.map do |pooler|
-#         {
-#           p: pooler,
-#           picks: pooler.picks.where(season: @week_info[:season], week: @week_info[:week]).first
-#         }
-#       end
-#
-#       @results = calculate_week_results(picks_data, @week_data, @week_info[:week])
-#       @totals = @results.map do |r|
-#         r.reduce(0) { |t, c| t = t + c }
-#       end
-#     else
-#       @results = (1..@week_info[:week]).map do |w|
-#         week_data = get_week(@week_info[:season].to_s, w.to_s)['events'].map do |x|
-#           x[:home_code] = get_shortname(x['strHomeTeam'])
-#           x[:home_won] = x['intHomeScore'].to_i > x['intAwayScore'].to_i
-#
-#           x[:away_code] = get_shortname(x['strAwayTeam'])
-#           x[:away_won] = x['intAwayScore'].to_i > x['intHomeScore'].to_i
-#           x
-#         end
-#         picks_data = @poolers.map do |pooler|
-#           {
-#             p: pooler,
-#             picks: pooler.picks.where(season: @week_info[:season], week: w).first
-#           }
-#         end
-#
-#         calculate_week_results(picks_data, week_data, w).map do |r|
-#           r.reduce(0) do |t, c|
-#             t = c >= 0 ? t + c : t + 0
-#           end
-#         end
-#       end
-#
-#       @totals = @poolers.each_with_index.map do |_, i|
-#         @results.reduce(0) do |t, a|
-#           t = t + a[i]
-#         end
-#       end
-#     end
-#   end
-#
 #     def calculate_week_results(picks_data, week_data, week)
 #       picks_data.map do |e|
 #         if e[:picks].nil?
@@ -214,4 +130,62 @@ def GetCorrectScore(week_num):
 #         end
 #       end
 #     end
-# end
+
+###################################
+# Python version here
+###################################
+# def PrintPoolerPicks():
+#     # Find all other pool members' ids
+#     otherpoolerids = list(map(lambda x: x['_id'], list(DB.poolers.find({ 'pool_id': pooler['pool_id'] }))))
+#     otherpoolerids.remove(pooler['_id'])
+#     # Print picks found in the DB
+#     picks = json.loads(possiblepicks[0]['pickstring'])
+#
+#     otherpicks = {}
+#     for otherid in otherpoolerids:
+#         foundpicks = list(DB.picks.find({
+#             'pooler_id': otherid,
+#             'season': season,
+#             'week': weeknum,
+#         }))
+#
+#         jsonpicks = json.loads(foundpicks[0]['pickstring'])
+#         for k in jsonpicks:
+#             if not(k in otherpicks):
+#                 otherpicks[k] = []
+#             otherpicks[k].append(jsonpicks[k])
+#
+#     uniquepicks = {}
+#     for k in picks:
+#         uniquepicks[k] = not(picks[k] in otherpicks[k])
+#
+#     score = 0
+#     for match in week:
+#         hscore = int(match['intHomeScore'])
+#         ascore = int(match['intAwayScore'])
+#
+#         hwin = hscore > ascore
+#         tied = hscore == ascore
+#
+#         hpick = picks[match['idEvent']] == GetTeamShortName(match["strHomeTeam"])
+#         rightpick = (hwin and hpick) or (not(hwin) and not(hpick))
+#
+#         if tied:
+#             hwinstr = "-"
+#             awinstr = "-"
+#
+#             score = score + 1
+#         else:
+#             hwinstr = "*" if hwin else " "
+#             awinstr = " " if hwin else "*"
+#
+#             if rightpick and uniquepicks[match['idEvent']]:
+#                 score = score + int(GetWinScore(weeknum) * 1.5)
+#             elif rightpick:
+#                 score = score + GetWinScore(weeknum)
+#
+#         print(f'\t{awinstr} [{" " if hpick else "X"}] {ascore} {match["strAwayTeam"]}')
+#         print(f'\t{hwinstr} [{"X" if hpick else " "}] {hscore} {match["strHomeTeam"]}')
+#         print()
+#
+#     print(f'Score pour: {GetWeekLongName(weeknum)} de la saison {season} => {score}')

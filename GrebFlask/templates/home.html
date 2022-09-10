@@ -7,31 +7,47 @@
     </head>
 
     <body>
-        <h1>Homepage - Show the results for the latest week</h1>
-        <ol>
-        {% for pooler in poolers %}
-            <li>{{pooler['name']}} => {{pooler['favTeam']}}</li>
-        {% endfor %}
-        </ol>
+        <h2>{{ pooldata['name'] }} - Resultats pour la saison {{ season }}, {{ GetWeekLongName(week) }}</h2>
 
-        {% for k, v in picks.items() %}
-        <p>
-            {{ k }} : {{ v }}
-        </p>
-        {% endfor %}
-
-        {% for k, v in allpicks.items() %}
-        <p>
-            {{ k }} : {{ v }}
-        </p>
-        {% endfor %}
-
+        <table style="padding: 10px 0px">
+            <tr>
+                <th style="text-align:right">Away Team</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>Home Team</th>
+                {% for pooler in poolers %}
+                    <th>{{ pooler['name'] }}</th>
+                {% endfor %}
+            </tr>
         {% for match in weekdata %}
-        <p>
-        <img src="{{ url_for('static', filename=GetTeamShortName(match["strAwayTeam"]) + '.png') }}" width="30px"/>
-        vs.
-        <img src="{{ url_for('static', filename=GetTeamShortName(match["strHomeTeam"]) + '.png') }}" width="30px"/>
-        </p>
+            <tr>
+                <td style="text-align:right">
+                    {{ match['strAwayTeam'] }}
+                    <img
+                        src="{{ url_for('static', filename=GetTeamShortName(match["strAwayTeam"]) + '.png') }}"
+                        width="30px"
+                    />
+                </td>
+                <td>{{ match['intAwayScore'] }}</td>
+                <td>vs.</td>
+                <td>{{ match['intHomeScore'] }}</td>
+                <td>
+                    <img
+                        src="{{ url_for('static', filename=GetTeamShortName(match["strHomeTeam"]) + '.png') }}"
+                        width="30px"
+                    />
+                    {{ match['strHomeTeam'] }}
+                </td>
+
+                {% for pooler in poolers %}
+                    <td><img
+                        src="{{ url_for('static', filename=picksdata[pooler['_id']][match['idEvent']] + '.png') }}"
+                        width="30px"/>
+                    </td>
+                {% endfor %}
+            </tr>
         {% endfor %}
+        </table>
     </body>
 </html>

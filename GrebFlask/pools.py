@@ -22,11 +22,36 @@ def index():
     for p in poolers:
         allpicks[p['_id']] = loads(DB.picks.find({
             'pooler_id': p['_id'],
-            'season': int(season),
-            'week': int(week)
+            'season': season,
+            'week': week
         })[0]['pickstring'])
 
-    weekdata = GetWeek(season, week)
+    otherpicks = {}
+    for p in poolers:
+        if p['_id'] == pooler['_id']: continue
+
+        foundpicks = list(DB.picks.find({
+            'pooler_id': p['_id'],
+            'season': season,
+            'week': week,
+        }))
+
+        jsonpicks = loads(foundpicks[0]['pickstring'])
+        for k in jsonpicks:
+            if not(k in otherpicks):
+                otherpicks[k] = []
+            otherpicks[k].append(jsonpicks[k])
+
+    # Used to analyse for unique picks
+    picks = loads(DB.picks.find({
+            'pooler_id': pooler['_id'],
+            'season': season,
+            'week': week,
+        })[0]['pickstring'])
+
+    uniquepicks = {}
+    for k in picks:
+        uniquepicks[k] = not(picks[k] in otherpicks[k])
 
     return render_template('home.html',
         GetTeamShortName = GetTeamShortName,
@@ -34,9 +59,11 @@ def index():
         season = season,
         week = week,
         pooldata = pool,
-        weekdata = weekdata,
+        weekdata = GetWeek(season, week),
         poolers = poolers,
         picksdata = allpicks,
+        otherpicks = otherpicks,
+        uniquepicks = uniquepicks,
     )
 
 @PoolsBlueprint.route('/pools/<season>/<week>')
@@ -90,46 +117,6 @@ def GetCorrectScore(week_num):
     elif n == 21: return 8
     elif n == 22: return 10
     else:         return 2
-
-###################################
-# Ruby version here
-###################################
-#     def calculate_week_results(picks_data, week_data, week)
-#       picks_data.map do |e|
-#         if e[:picks].nil?
-#           (0...week_data.size).map { |_| -1 }
-#         else
-#           picks = e[:picks].parse_picks
-#           week_data.each_with_index.map do |game, i|
-#             curr_pick = e[:picks].json_picks? ? picks[game['idEvent']] : picks[i]
-#
-#             if (game[:away_won] && curr_pick == game[:away_code]) ||
-#                (game[:home_won] && curr_pick == game[:home_code])
-#
-#               # pooler was right
-#               unique = picks_data.one? do |x|
-#                 if !x[:picks].nil?
-#                   x_picks = x[:picks].parse_picks
-#                   other_current = x[:picks].json_picks? ? x_picks[game['idEvent']] : x_picks[i]
-#                   other_current == curr_pick
-#                 else
-#                   false
-#                 end
-#               end
-#
-#               correctScore = get_correct_score(week)
-#               unique ? (1.5*correctScore).to_i : correctScore
-#             else
-#               # pooler was wrong OR tie game OR no score
-#               tied = (!game[:away_won] && !game[:home_won] &&
-#                       !game['intAwayScore'].nil? && !game['intHomeScore'].nil?)
-#
-#               tied ? 1 : 0
-#             end
-#           end
-#         end
-#       end
-#     end
 
 ###################################
 # Python version here

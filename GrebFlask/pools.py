@@ -27,36 +27,8 @@ def index():
             'week': week
         })[0]['pickstring'])
 
-    otherpicks = {}
-    for p in poolers:
-        if p['_id'] == pooler['_id']: continue
-
-        foundpicks = list(DB.picks.find({
-            'pooler_id': p['_id'],
-            'season': season,
-            'week': week,
-        }))
-
-        jsonpicks = loads(foundpicks[0]['pickstring'])
-        for k in jsonpicks:
-            if not(k in otherpicks):
-                otherpicks[k] = []
-            otherpicks[k].append(jsonpicks[k])
-
-    # Used to analyse for unique picks
-    picks = loads(DB.picks.find({
-            'pooler_id': pooler['_id'],
-            'season': season,
-            'week': week,
-        })[0]['pickstring'])
-
-    #TODO: Need to adapt this for unique picks for other poolers
-    uniquepicks = {}
-    for k in picks:
-        uniquepicks[k] = not(picks[k] in otherpicks[k])
-
     allscores = {}
-    for pid, pick in allpicks.items():
+    for pid, picks in allpicks.items():
         for match in weekdata:
             hscore = match['intHomeScore']
             ascore = match['intAwayScore']
@@ -64,20 +36,29 @@ def index():
             hwin = hscore > ascore
             tied = hscore == ascore
 
-            hpick = pick[match['idEvent']] == GetTeamShortName(match['strHomeTeam'])
+            hpick = picks[match['idEvent']] == GetTeamShortName(match['strHomeTeam'])
             rightpick = (hwin and hpick) or (not(hwin) and not(hpick))
+
+            others = []
+            for i, innerpicks in allpicks.items():
+                if i == pid: continue
+
+                others.append(innerpicks[match['idEvent']])
+            unique = not(picks[match['idEvent']] in others)
 
             if not(pid in allscores):
                 allscores[pid] = {}
 
             if tied:
                 allscores[pid][match['idEvent']] = 1
+            elif rightpick and unique:
+                allscores[pid][match['idEvent']] = 3
             elif rightpick:
                 allscores[pid][match['idEvent']] = 2
             else:
                 allscores[pid][match['idEvent']] = 0
 
-    bgcolors = ['red', 'gray', 'green', '']
+    bgcolors = ['red', 'gray', 'green', 'yellow']
 
     return render_template('home.html',
         GetTeamShortName = GetTeamShortName,

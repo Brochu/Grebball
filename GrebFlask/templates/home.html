@@ -41,9 +41,13 @@
                 </td>
 
                 {% for pooler in poolers %}
-                    <td style="border: 5px solid;border-color: {{ bgcolors[allscores[pooler['_id']][match['idEvent']]] }}"><img
-                        src="{{ url_for('static', filename=picksdata[pooler['_id']][match['idEvent']] + '.png') }}"
-                        width="30px"/>
+                    <td style="border: 5px solid;border-color: {{ bgcolors[allscores[pooler['_id']][match['idEvent']]] }}">
+                        {% if picksdata[pooler['_id']][match['idEvent']] != '' %}
+                        <img
+                            src="{{ url_for('static', filename=picksdata[pooler['_id']][match['idEvent']] + '.png') }}"
+                            width="30px"
+                        />
+                        {% endif %}
                     </td>
                 {% endfor %}
             </tr>

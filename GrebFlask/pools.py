@@ -20,7 +20,7 @@ def index():
     pool = DB.pools.find({ '_id': pooler['pool_id'] })[0]
     poolers = list(DB.poolers.find({ 'pool_id': pooler['pool_id'] }))
 
-    allpicks = FetchAllPicks(poolers, season, week)
+    allpicks = FetchAllPicks(poolers, season, week, weekdata)
     allscores = CalcWeekResults(weekdata, allpicks, week)
 
     #TODO: Fix this with post season
@@ -50,7 +50,7 @@ def get(strseason, strweek):
     pool = DB.pools.find({ '_id': pooler['pool_id'] })[0]
     poolers = list(DB.poolers.find({ 'pool_id': pooler['pool_id'] }))
 
-    allpicks = FetchAllPicks(poolers, season, week)
+    allpicks = FetchAllPicks(poolers, season, week, weekdata)
     allscores = CalcWeekResults(weekdata, allpicks, week)
 
     #TODO: Fix this with post season
@@ -99,15 +99,21 @@ def FindCurrentWeek():
 
     return maxseason, maxweek
 
-def FetchAllPicks(poolers, season, week):
-    #TODO: Make sure this works with partial picks for a week
+def FetchAllPicks(poolers, season, week, weekdata):
     allpicks = {}
     for p in poolers:
-        allpicks[p['_id']] = loads(DB.picks.find({
+        possiblepicks = list(DB.picks.find({
             'pooler_id': p['_id'],
             'season': season,
             'week': week
-        })[0]['pickstring'])
+        }))
+
+        if len(possiblepicks) > 0:
+            allpicks[p['_id']] = loads(possiblepicks[0]['pickstring'])
+        else:
+            allpicks[p['_id']] = {}
+            for match in weekdata:
+                allpicks[p['_id']][match['idEvent']] = ''
 
     return allpicks
 
@@ -115,8 +121,8 @@ def CalcWeekResults(matches, allpicks, week):
     allscores = {}
     for pid, picks in allpicks.items():
         for match in matches:
-            hscore = match['intHomeScore']
-            ascore = match['intAwayScore']
+            hscore = int(match['intHomeScore']) if match['intHomeScore'] is not None else 0
+            ascore = int(match['intAwayScore']) if match['intAwayScore'] is not None else 0
 
             hwin = hscore > ascore
             tied = hscore == ascore

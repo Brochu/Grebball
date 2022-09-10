@@ -88,13 +88,13 @@ def GetWeek(season, week):
     # 22: Final game (SuperBowl)
 
     # Special handling of round values for TheSportDB
-    if week == '19':
+    if week == 19:
         realWeek = 160
-    elif week == '20':
+    elif week == 20:
         realWeek = 125
-    elif week == '21':
+    elif week == 21:
         realWeek = 150
-    elif week == '22':
+    elif week == 22:
         realWeek = 200
     else:
         realWeek = week;

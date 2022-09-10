@@ -13,6 +13,7 @@ poolerid = ObjectId('5f70f0ffd8e2db255c9a0df6')
 @PoolsBlueprint.route('/pools')
 def index():
     [season, week] = FindCurrentWeek()
+    weekdata = GetWeek(season, week)
     # pooler = loads(session['pooler'])
     pooler = DB.poolers.find({ '_id': poolerid })[0]
     pool = DB.pools.find({ '_id': pooler['pool_id'] })[0]
@@ -49,9 +50,34 @@ def index():
             'week': week,
         })[0]['pickstring'])
 
+    #TODO: Need to adapt this for unique picks for other poolers
     uniquepicks = {}
     for k in picks:
         uniquepicks[k] = not(picks[k] in otherpicks[k])
+
+    allscores = {}
+    for pid, pick in allpicks.items():
+        for match in weekdata:
+            hscore = match['intHomeScore']
+            ascore = match['intAwayScore']
+
+            hwin = hscore > ascore
+            tied = hscore == ascore
+
+            hpick = pick[match['idEvent']] == GetTeamShortName(match['strHomeTeam'])
+            rightpick = (hwin and hpick) or (not(hwin) and not(hpick))
+
+            if not(pid in allscores):
+                allscores[pid] = {}
+
+            if tied:
+                allscores[pid][match['idEvent']] = 1
+            elif rightpick:
+                allscores[pid][match['idEvent']] = 2
+            else:
+                allscores[pid][match['idEvent']] = 0
+
+    bgcolors = ['red', 'gray', 'green', '']
 
     return render_template('home.html',
         GetTeamShortName = GetTeamShortName,
@@ -59,11 +85,11 @@ def index():
         season = season,
         week = week,
         pooldata = pool,
-        weekdata = GetWeek(season, week),
+        weekdata = weekdata,
         poolers = poolers,
         picksdata = allpicks,
-        otherpicks = otherpicks,
-        uniquepicks = uniquepicks,
+        allscores = allscores,
+        bgcolors = bgcolors,
     )
 
 @PoolsBlueprint.route('/pools/<season>/<week>')

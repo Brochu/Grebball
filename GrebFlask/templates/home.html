@@ -41,7 +41,7 @@
                 </td>
 
                 {% for pooler in poolers %}
-                    <td><img
+                    <td style="background-color: {{ bgcolors[allscores[pooler['_id']][match['idEvent']]] }}"><img
                         src="{{ url_for('static', filename=picksdata[pooler['_id']][match['idEvent']] + '.png') }}"
                         width="30px"/>
                     </td>
@@ -49,9 +49,5 @@
             </tr>
         {% endfor %}
         </table>
-
-        {{ otherpicks }}
-
-        {{ uniquepicks }}
     </body>
 </html>

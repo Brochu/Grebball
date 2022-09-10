@@ -20,14 +20,7 @@ def index():
     pool = DB.pools.find({ '_id': pooler['pool_id'] })[0]
     poolers = list(DB.poolers.find({ 'pool_id': pooler['pool_id'] }))
 
-    allpicks = {}
-    for p in poolers:
-        allpicks[p['_id']] = loads(DB.picks.find({
-            'pooler_id': p['_id'],
-            'season': season,
-            'week': week
-        })[0]['pickstring'])
-
+    allpicks = FetchAllPicks(poolers, season, week)
     allscores = CalcWeekResults(weekdata, allpicks, week)
 
     #TODO: Fix this with post season
@@ -57,14 +50,7 @@ def get(strseason, strweek):
     pool = DB.pools.find({ '_id': pooler['pool_id'] })[0]
     poolers = list(DB.poolers.find({ 'pool_id': pooler['pool_id'] }))
 
-    allpicks = {}
-    for p in poolers:
-        allpicks[p['_id']] = loads(DB.picks.find({
-            'pooler_id': p['_id'],
-            'season': season,
-            'week': week
-        })[0]['pickstring'])
-
+    allpicks = FetchAllPicks(poolers, season, week)
     allscores = CalcWeekResults(weekdata, allpicks, week)
 
     #TODO: Fix this with post season
@@ -112,6 +98,18 @@ def FindCurrentWeek():
             maxweek = s['week_max']
 
     return maxseason, maxweek
+
+def FetchAllPicks(poolers, season, week):
+    #TODO: Make sure this works with partial picks for a week
+    allpicks = {}
+    for p in poolers:
+        allpicks[p['_id']] = loads(DB.picks.find({
+            'pooler_id': p['_id'],
+            'season': season,
+            'week': week
+        })[0]['pickstring'])
+
+    return allpicks
 
 def CalcWeekResults(matches, allpicks, week):
     allscores = {}

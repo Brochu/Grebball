@@ -14,6 +14,7 @@ poolerid = ObjectId('5f70f0ffd8e2db255c9a0df6')
 def index():
     [season, week] = FindCurrentWeek()
     weekdata = GetWeek(season, week)
+
     # pooler = loads(session['pooler'])
     pooler = DB.poolers.find({ '_id': poolerid })[0]
     pool = DB.pools.find({ '_id': pooler['pool_id'] })[0]
@@ -45,11 +46,42 @@ def index():
         bgcolors = bgcolors,
     )
 
-@PoolsBlueprint.route('/pools/<season>/<week>')
-def get(season, week):
-    #TODO: Base this logic based on the one above
-    print(f'Need to show results for season {season}:{week}')
-    return "TODO: NEED TO COPY THIS OFF OFF INDEX"
+@PoolsBlueprint.route('/pools/<strseason>/<strweek>')
+def get(strseason, strweek):
+    season = int(strseason)
+    week = int(strweek)
+    weekdata = GetWeek(season, week)
+
+    # pooler = loads(session['pooler'])
+    pooler = DB.poolers.find({ '_id': poolerid })[0]
+    pool = DB.pools.find({ '_id': pooler['pool_id'] })[0]
+    poolers = list(DB.poolers.find({ 'pool_id': pooler['pool_id'] }))
+
+    allpicks = {}
+    for p in poolers:
+        allpicks[p['_id']] = loads(DB.picks.find({
+            'pooler_id': p['_id'],
+            'season': season,
+            'week': week
+        })[0]['pickstring'])
+
+    allscores = CalcWeekResults(weekdata, allpicks, week)
+
+    #TODO: Fix this with post season
+    bgcolors = ['red', 'gray', 'green', 'yellow']
+
+    return render_template('home.html',
+        GetTeamShortName = GetTeamShortName,
+        GetWeekLongName = GetWeekLongName,
+        season = season,
+        week = week,
+        pooldata = pool,
+        weekdata = weekdata,
+        poolers = poolers,
+        picksdata = allpicks,
+        allscores = allscores,
+        bgcolors = bgcolors,
+    )
 
 def FindCurrentWeek():
     seasonPipeline = [{

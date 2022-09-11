@@ -36,7 +36,7 @@ def new(strseason, strweek):
 def create():
     picks = {}
     for matchid in loads(request.form['matchids']):
-        picks[matchid] = request.form[matchid]
+        picks[matchid] = request.form[matchid] if matchid in request.form else ''
 
     pickObj = {
         'season': request.form['season'],

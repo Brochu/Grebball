@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Grebball - Homepage</title>
+    </head>
+
+    <body>
+        <h2>{{ pooldata['name'] }} - Resultats pour la saison {{ season }}, {{ GetWeekLongName(week) }}</h2>
+
+        <table style="padding: 10px 0px">
+            <tr>
+                <th style="text-align:right">Away Team</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>Home Team</th>
+                {% for pooler in poolers %}
+                    <th>{{ pooler['name'] }}</th>
+                {% endfor %}
+            </tr>
+        {% for match in weekdata %}
+            <tr>
+                <td style="text-align:right">
+                    {{ match['strAwayTeam'] }}
+                    <img
+                        src="{{ url_for('static', filename=GetTeamShortName(match["strAwayTeam"]) + '.png') }}"
+                        width="30px"
+                    />
+                </td>
+                <td>{{ match['intAwayScore'] if match['intAwayScore'] != None else 0 }}</td>
+                <td>vs.</td>
+                <td>{{ match['intHomeScore'] if match['intHomeScore'] != None else 0 }}</td>
+                <td>
+                    <img
+                        src="{{ url_for('static', filename=GetTeamShortName(match["strHomeTeam"]) + '.png') }}"
+                        width="30px"
+                    />
+                    {{ match['strHomeTeam'] }}
+                </td>
+
+                {% for pooler in poolers %}
+                    <td style="border: 5px solid;border-color: {{ bgcolors[allscores[pooler['_id']][match['idEvent']]] }}">
+                        {% if picksdata[pooler['_id']][match['idEvent']] != '' %}
+                        <img
+                            src="{{ url_for('static', filename=picksdata[pooler['_id']][match['idEvent']] + '.png') }}"
+                            width="30px"
+                        />
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </table>
+    </body>
+</html>

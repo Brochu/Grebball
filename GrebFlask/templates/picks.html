@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Grebball - Create New Picks</title>
+    </head>
+
+    <body>
+        <h2>{{ pooldata['name'] }} - Nouveaux choix pour {{ season }}, {{ GetWeekLongName(week) }}</h2>
+
+        <form action="/picks/create" method="post">
+            <input type="hidden" name="season" value="{{ season }}" />
+            <input type="hidden" name="week" value="{{ week }}" />
+            <input type="hidden" name="pooler_id" value="{{ pooler['_id'] }}" />
+            <input type="hidden" name="matchids" value="{{ matchids }}" />
+
+            <table>
+            {% for match in weekdata %}
+                <tr>
+                <td>{{ match['strAwayTeam'] }}</td>
+                <td><input
+                    type="radio"
+                    name="{{ match['idEvent'] }}"
+                    value="{{ GetTeamShortName(match['strAwayTeam']) }}"
+                /></td>
+                <td><input
+                    type="radio"
+                    name="{{ match['idEvent'] }}"
+                    value="{{ GetTeamShortName(match['strHomeTeam']) }}"
+                /></td>
+                <td>{{ match['strHomeTeam'] }}</td>
+                </tr>
+            {% endfor %}
+            <table>
+
+            <input type="submit" />
+        </form>
+    </body>
+</html>

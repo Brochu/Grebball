@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Grebball - Create New Picks</title>
+    </head>
+
+    <body>
+        <h2>Choix pour {{ pooler['name'] }} de la saison {{ season }}</h2>
+
+        <ul>
+        {% for k, p in picksmap.items() %}
+            {% if p == None %}
+                <li><a href="/picks/new/{{season}}/{{k}}">{{ GetWeekName(k) }}</a></li>
+            {% else %}
+                <li>{{ GetWeekName(k) }}</li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    </body>
+</html>

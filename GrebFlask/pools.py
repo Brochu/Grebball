@@ -36,6 +36,7 @@ def index():
         poolers = poolers,
         picksdata = allpicks,
         allscores = allscores,
+        alltotals = alltotals,
         bgcolors = bgcolors,
     )
 
@@ -66,6 +67,7 @@ def get(strseason, strweek):
         poolers = poolers,
         picksdata = allpicks,
         allscores = allscores,
+        alltotals = alltotals,
         bgcolors = bgcolors,
     )
 

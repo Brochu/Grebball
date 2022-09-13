@@ -21,7 +21,7 @@ def index():
     poolers = list(DB.poolers.find({ 'pool_id': pooler['pool_id'] }))
 
     allpicks = FetchAllPicks(poolers, season, week, weekdata)
-    allscores = CalcWeekResults(weekdata, allpicks, week)
+    [allscores, alltotals] = CalcWeekResults(weekdata, allpicks, week)
 
     #TODO: Fix this with post season
     bgcolors = ['red', 'gray', 'green', 'yellow']
@@ -51,7 +51,7 @@ def get(strseason, strweek):
     poolers = list(DB.poolers.find({ 'pool_id': pooler['pool_id'] }))
 
     allpicks = FetchAllPicks(poolers, season, week, weekdata)
-    allscores = CalcWeekResults(weekdata, allpicks, week)
+    [allscores, alltotals] = CalcWeekResults(weekdata, allpicks, week)
 
     #TODO: Fix this with post season
     bgcolors = ['red', 'gray', 'green', 'yellow']
@@ -148,7 +148,15 @@ def CalcWeekResults(matches, allpicks, week):
                 allscores[pid][match['idEvent']] = GetCorrectScore(week)
             else:
                 allscores[pid][match['idEvent']] = 0
-    return allscores
+
+    alltotals = {}
+    for pid, scores in allscores.items():
+        total = 0
+        for _, score in scores.items():
+            total = total + score
+        alltotals[pid] = total
+
+    return allscores, alltotals
 
 def GetCorrectScore(week_num):
     if (type(week_num) == str):

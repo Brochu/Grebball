@@ -20,7 +20,7 @@
                     <th>{{ pooler['name'] }}</th>
                 {% endfor %}
             </tr>
-        {% for match in weekdata %}
+            {% for match in weekdata %}
             <tr>
                 <td style="text-align:right">
                     {{ match['strAwayTeam'] }}
@@ -51,7 +51,14 @@
                     </td>
                 {% endfor %}
             </tr>
-        {% endfor %}
+            {% endfor %}
+            <tr>
+                <td colspan=5 style="text-align:right">TOTALS: </td>
+
+                {% for pooler in poolers %}
+                <td style="text-align:center">{{ alltotals[ pooler['_id'] ] }}</td>
+                {% endfor %}
+            </tr>
         </table>
     </body>
 </html>

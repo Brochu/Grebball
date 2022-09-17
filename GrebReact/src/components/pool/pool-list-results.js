@@ -6,7 +6,6 @@ import {
   Avatar,
   Box,
   Card,
-  Checkbox,
   Table,
   TableBody,
   TableCell,
@@ -16,9 +15,9 @@ import {
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
-export const PoolListResults = ({ customers, ...rest }) => {
+export const PoolListResults = ({ poolResults }) => {
   return (
-    <Card {...rest}>
+    <Card>
       <PerfectScrollbar>
         <Box sx={{ minWidth: 1050 }}>
           <Table>
@@ -42,7 +41,7 @@ export const PoolListResults = ({ customers, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.map((customer) => (
+              {poolResults.map((customer) => (
                 <TableRow
                   hover
                   key={customer.id}
@@ -91,5 +90,5 @@ export const PoolListResults = ({ customers, ...rest }) => {
 };
 
 PoolListResults.propTypes = {
-  customers: PropTypes.array.isRequired
+  poolResults: PropTypes.array.isRequired
 };

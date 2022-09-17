@@ -20,7 +20,7 @@ const Page = () => (
     >
       <Container maxWidth={false}>
         <Box sx={{ mt: 3 }}>
-          <PoolListResults customers={customers} />
+          <PoolListResults poolResults={customers} />
         </Box>
       </Container>
     </Box>

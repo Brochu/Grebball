@@ -95,7 +95,7 @@ export const PoolListResults = ({ customers, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+              {customers.map((customer) => (
                 <TableRow
                   hover
                   key={customer.id}

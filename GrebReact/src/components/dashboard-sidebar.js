@@ -4,23 +4,24 @@ import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { Box, Button, Divider, Drawer, Typography, useMediaQuery } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { ChartBar as ChartBarIcon } from '../icons/chart-bar';
-import { Selector as SelectorIcon } from '../icons/selector';
+
+import { SportsFootball as SportFootballIcon } from '../icons/sports-football';
+import { CheckCircle as CheckCircleIcon } from '../icons/check-circle';
 import { User as UserIcon } from '../icons/user';
-import { Users as UsersIcon } from '../icons/users';
 import { XCircle as XCircleIcon } from '../icons/x-circle';
+
 import { Logo } from './logo';
 import { NavItem } from './nav-item';
 
 const items = [
   {
     href: '/',
-    icon: (<ChartBarIcon fontSize="small" />),
+    icon: (<SportFootballIcon fontSize="small" />),
     title: 'Pool'
   },
   {
     href: '/picks',
-    icon: (<UsersIcon fontSize="small" />),
+    icon: (<CheckCircleIcon fontSize="small" />),
     title: 'Picks'
   },
   {

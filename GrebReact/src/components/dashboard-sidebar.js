@@ -28,6 +28,11 @@ const items = [
     icon: (<UserIcon fontSize="small" />),
     title: 'Account'
   },
+  {
+    href: '/goodbye',
+    icon: (<XCircleIcon fontSize="small" />),
+    title: 'Logout'
+  },
 ];
 
 export const DashboardSidebar = (props) => {

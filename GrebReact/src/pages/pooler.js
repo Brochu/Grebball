@@ -8,7 +8,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        Account | Material Kit
+        Pooler | Grebball
       </title>
     </Head>
     <Box

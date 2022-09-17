@@ -1,13 +1,13 @@
 import Head from 'next/head';
 import { Box, Container, Grid } from '@mui/material';
-import { Budget } from '../components/pool/budget';
-import { LatestOrders } from '../components/pool/latest-orders';
-import { LatestProducts } from '../components/pool/latest-products';
-import { Sales } from '../components/pool/sales';
-import { TasksProgress } from '../components/pool/tasks-progress';
-import { TotalCustomers } from '../components/pool/total-customers';
-import { TotalProfit } from '../components/pool/total-profit';
-import { TrafficByDevice } from '../components/pool/traffic-by-device';
+import { Budget } from '../components/picks/budget';
+import { LatestOrders } from '../components/picks/latest-orders';
+import { LatestProducts } from '../components/picks/latest-products';
+import { Sales } from '../components/picks/sales';
+import { TasksProgress } from '../components/picks/tasks-progress';
+import { TotalCustomers } from '../components/picks/total-customers';
+import { TotalProfit } from '../components/picks/total-profit';
+import { TrafficByDevice } from '../components/picks/traffic-by-device';
 import { DashboardLayout } from '../components/dashboard-layout';
 
 const Page = () => (

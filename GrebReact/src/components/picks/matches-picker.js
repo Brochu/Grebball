@@ -1,13 +1,15 @@
 import { useState } from 'react'
-import { Doughnut } from 'react-chartjs-2';
-import { Box, Card, CardContent, CardHeader, Divider, Typography, useTheme } from '@mui/material';
-import LaptopMacIcon from '@mui/icons-material/LaptopMac';
-import PhoneIcon from '@mui/icons-material/Phone';
-import TabletIcon from '@mui/icons-material/Tablet';
+import { Box, Card, CardContent, CardHeader, Divider, Radio, useTheme } from '@mui/material';
+import { GetTeamShortName } from '../../utils/football'
 
 export const MatchesPicker = ({ matches }) => {
   const theme = useTheme();
   const [picks, setPicks] = useState({});
+
+  const handleChange = (event) => {
+      var t = event.target;
+      console.log(`${t.name} -> ${t.value}`);
+  };
 
   return (
     <Card>
@@ -16,12 +18,17 @@ export const MatchesPicker = ({ matches }) => {
       <CardContent>
         <Box
           sx={{
-            height: 300,
             position: 'relative'
           }}
         >
           {matches.map((match) => (
-            <p>{ match.strEventAlternate }</p>
+            <Box>
+              { match.strAwayTeam }
+              <Radio name={match.idEvent} value={GetTeamShortName(match.strAwayTeam)} onChange={handleChange} />
+
+              <Radio name={match.idEvent} value={GetTeamShortName(match.strHomeTeam)} onChange={handleChange} />
+              { match.strHomeTeam }
+            </Box>
           ))}
         </Box>
       </CardContent>

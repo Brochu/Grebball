@@ -11,41 +11,32 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Typography
+  Typography,
+  Tooltip,
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 
-export const PoolListResults = ({ poolResults }) => {
+export const PoolListResults = ({ matches, poolers, poolResults }) => {
   return (
     <Card>
       <PerfectScrollbar>
-        <Box sx={{ minWidth: 1050 }}>
-          <Table>
+        <Box>
+          <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell>
-                  Name
+                  Match
                 </TableCell>
+                {poolers.map((pooler) => (
                 <TableCell>
-                  Email
+                  { pooler.name }
                 </TableCell>
-                <TableCell>
-                  Location
-                </TableCell>
-                <TableCell>
-                  Phone
-                </TableCell>
-                <TableCell>
-                  Registration date
-                </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
-              {poolResults.map((customer) => (
-                <TableRow
-                  hover
-                  key={customer.id}
-                >
+              {matches.map((match) => (
+                <TableRow hover>
                   <TableCell>
                     <Box
                       sx={{
@@ -53,32 +44,26 @@ export const PoolListResults = ({ poolResults }) => {
                         display: 'flex'
                       }}
                     >
+                    <Tooltip title="New England Patriots">
                       <Avatar
-                        src={customer.avatarUrl}
-                        sx={{ mr: 2 }}
-                      >
-                        {getInitials(customer.name)}
-                      </Avatar>
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.name}
-                      </Typography>
+                        src={`/static/images/teams/NE.png`}
+                        sx={{ mr: 1 }}
+                      />
+                    </Tooltip>
+                      VS.
+                    <Tooltip title="Miami Dolphins">
+                      <Avatar
+                        src={`/static/images/teams/MIA.png`}
+                        sx={{ mr: 1 }}
+                      />
+                    </Tooltip>
                     </Box>
                   </TableCell>
-                  <TableCell>
-                    {customer.email}
+                  {poolers.map((pooler) => (
+                  <TableCell align="center">
+                    0
                   </TableCell>
-                  <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
-                  </TableCell>
-                  <TableCell>
-                    {customer.phone}
-                  </TableCell>
-                  <TableCell>
-                    {format(customer.createdAt, 'dd/MM/yyyy')}
-                  </TableCell>
+                  ))}
                 </TableRow>
               ))}
             </TableBody>
@@ -90,5 +75,6 @@ export const PoolListResults = ({ poolResults }) => {
 };
 
 PoolListResults.propTypes = {
-  poolResults: PropTypes.array.isRequired
+  matches: PropTypes.array.isRequired,
+  poolResults: PropTypes.array.isRequired,
 };

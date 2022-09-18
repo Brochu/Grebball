@@ -1,8 +1,9 @@
 import Head from 'next/head';
 import { Box, Container, Grid } from '@mui/material';
 import { WeekPicker } from '../components/picks/week-picker';
-import { TrafficByDevice } from '../components/picks/traffic-by-device';
+import { MatchesPicker } from '../components/picks/matches-picker';
 import { DashboardLayout } from '../components/dashboard-layout';
+import { matches } from '../__mocks__/matches'
 
 const Page = () => (
   <>
@@ -39,7 +40,7 @@ const Page = () => (
             xl={3}
             xs={12}
           >
-            <TrafficByDevice sx={{ height: '100%' }} />
+            <MatchesPicker matches = { matches } />
           </Grid>
         </Grid>
       </Container>

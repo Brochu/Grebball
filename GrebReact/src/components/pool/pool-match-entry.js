@@ -4,7 +4,7 @@ import {
   Box,
   Tooltip,
 } from '@mui/material';
-import { getTeamShortName } from '../../utils/football'
+import { GetTeamShortName } from '../../utils/football'
 
 export const PoolMatchEntry = ({ match }) => {
   return (

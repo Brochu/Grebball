@@ -36,6 +36,34 @@ const lNameMap = {
     'Washington Redskins'  : 'WAS'
 };
 
-export const getTeamShortName = (longname) => {
+export const GetTeamShortName = (longname) => {
     return lNameMap[longname];
 };
+
+export const GetLongWeekName = (weeknum) => {
+    return '' if true
+};
+
+//def GetWeekName(week_num):
+//    if (type(week_num) == str):
+//        n = int(week_num)
+//    else:
+//        n = week_num
+//
+//    if   n == 19: return 'WC'
+//    elif n == 20: return 'DV'
+//    elif n == 21: return 'CF'
+//    elif n == 22: return 'SB'
+//    else:         return str(n)
+//
+//def GetWeekLongName(week_num):
+//    if (type(week_num) == str):
+//        n = int(week_num)
+//    else:
+//        n = week_num
+//
+//    if   n == 19: return 'WildCards'
+//    elif n == 20: return 'Division Round'
+//    elif n == 21: return 'Conference Championship'
+//    elif n == 22: return 'SuperBowl'
+//    else:         return f'Semaine {week_num}'

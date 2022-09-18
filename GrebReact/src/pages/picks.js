@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import { Box, Container, Grid } from '@mui/material';
-import { Budget } from '../components/picks/budget';
 import { Sales } from '../components/picks/sales';
 import { TrafficByDevice } from '../components/picks/traffic-by-device';
 import { DashboardLayout } from '../components/dashboard-layout';
@@ -19,6 +18,7 @@ const Page = () => (
         py: 8
       }}
     >
+    test
       <Container maxWidth={false}>
         <Grid
           container

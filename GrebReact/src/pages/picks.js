@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { Box, Container, Grid } from '@mui/material';
-import { Sales } from '../components/picks/sales';
+import { WeekPicker } from '../components/picks/week-picker';
 import { TrafficByDevice } from '../components/picks/traffic-by-device';
 import { DashboardLayout } from '../components/dashboard-layout';
 
@@ -18,7 +18,6 @@ const Page = () => (
         py: 8
       }}
     >
-    test
       <Container maxWidth={false}>
         <Grid
           container
@@ -31,7 +30,7 @@ const Page = () => (
             xl={9}
             xs={12}
           >
-            <Sales />
+            <WeekPicker />
           </Grid>
           <Grid
             item

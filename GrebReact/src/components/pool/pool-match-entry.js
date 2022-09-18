@@ -17,7 +17,7 @@ export const PoolMatchEntry = ({ match }) => {
     >
     <Tooltip title={match.strAwayTeam}>
       <Avatar
-        src={`/static/images/teams/${getTeamShortName(match.strAwayTeam)}.png`}
+        src={`/static/images/teams/${GetTeamShortName(match.strAwayTeam)}.png`}
         sx={{ mr: 1 }}
       />
     </Tooltip>
@@ -26,7 +26,7 @@ export const PoolMatchEntry = ({ match }) => {
       { match.intHomeScore }
     <Tooltip title={match.strHomeTeam}>
       <Avatar
-        src={`/static/images/teams/${getTeamShortName(match.strHomeTeam)}.png`}
+        src={`/static/images/teams/${GetTeamShortName(match.strHomeTeam)}.png`}
         sx={{ mr: 1 }}
       />
     </Tooltip>

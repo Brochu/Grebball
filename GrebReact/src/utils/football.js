@@ -40,30 +40,30 @@ export const GetTeamShortName = (longname) => {
     return lNameMap[longname];
 };
 
-export const GetLongWeekName = (weeknum) => {
-    return '' if true
+export const GetWeekShortName = (weeknum) => {
+    var n = 0;
+    if (typeof(weeknum) == "string")
+        n = parseInt(weeknum);
+    else
+        n = weeknum
+
+    if (n == 19) return 'WC';
+    if (n == 20) return 'DV';
+    if (n == 21) return 'CF';
+    if (n == 22) return 'SB';
+    else return n.toString();
 };
 
-//def GetWeekName(week_num):
-//    if (type(week_num) == str):
-//        n = int(week_num)
-//    else:
-//        n = week_num
-//
-//    if   n == 19: return 'WC'
-//    elif n == 20: return 'DV'
-//    elif n == 21: return 'CF'
-//    elif n == 22: return 'SB'
-//    else:         return str(n)
-//
-//def GetWeekLongName(week_num):
-//    if (type(week_num) == str):
-//        n = int(week_num)
-//    else:
-//        n = week_num
-//
-//    if   n == 19: return 'WildCards'
-//    elif n == 20: return 'Division Round'
-//    elif n == 21: return 'Conference Championship'
-//    elif n == 22: return 'SuperBowl'
-//    else:         return f'Semaine {week_num}'
+export const GetWeekLongName = (weeknum) => {
+    var n = 0;
+    if (typeof(weeknum) == "string")
+        n = parseInt(weeknum);
+    else
+        n = weeknum
+
+    if (n == 19) return 'WildCards';
+    if (n == 20) return 'Division Round';
+    if (n == 21) return 'Conference Championship';
+    if (n == 22) return 'SuperBowl';
+    else return `Semaine ${n.toString()}`;
+};

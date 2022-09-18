@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { PoolMatchEntry } from './pool-match-entry';
 
-export const PoolListResults = ({ matches, poolers, poolResults }) => {
+export const PoolListResults = ({ matches, poolers, scores, totals }) => {
   return (
     <Card>
       <PerfectScrollbar>
@@ -47,7 +47,7 @@ export const PoolListResults = ({ matches, poolers, poolResults }) => {
 
                   {poolers.map((pooler) => (
                   <TableCell align="center">
-                    0
+                    { scores[pooler._id][match.idEvent] }
                   </TableCell>
                   ))}
 
@@ -61,7 +61,7 @@ export const PoolListResults = ({ matches, poolers, poolResults }) => {
 
                 {poolers.map((pooler) => (
                 <TableCell align="center">
-                  *total here*
+                  { totals[pooler._id] }
                 </TableCell>
                 ))}
               </TableRow>
@@ -76,5 +76,6 @@ export const PoolListResults = ({ matches, poolers, poolResults }) => {
 
 PoolListResults.propTypes = {
   matches: PropTypes.array.isRequired,
-  poolResults: PropTypes.array.isRequired,
+  poolers: PropTypes.array.isRequired,
+  scores: PropTypes.array.isRequired,
 };

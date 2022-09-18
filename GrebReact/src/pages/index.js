@@ -2,9 +2,10 @@ import Head from 'next/head';
 import { Box, Container } from '@mui/material';
 import { PoolListResults } from '../components/pool/pool-list-results';
 import { DashboardLayout } from '../components/dashboard-layout';
-import { customers } from '../__mocks__/customers';
 import { matches } from '../__mocks__/matches';
 import { poolers } from '../__mocks__/poolers';
+import { scores } from '../__mocks__/scores';
+import { totals } from '../__mocks__/totals';
 
 const Page = () => (
   <>
@@ -22,7 +23,7 @@ const Page = () => (
     >
       <Container maxWidth={false}>
         <Box sx={{ mt: 3 }}>
-          <PoolListResults matches = { matches } poolers = { poolers } poolResults={ customers } />
+          <PoolListResults matches = { matches } poolers = { poolers } scores={ scores } totals={ totals } />
         </Box>
       </Container>
     </Box>

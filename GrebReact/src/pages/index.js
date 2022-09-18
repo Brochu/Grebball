@@ -11,7 +11,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        Picks | Grebball
+        Pool | Grebball
       </title>
     </Head>
     <Box

@@ -14,7 +14,7 @@ import {
   Typography,
   Tooltip,
 } from '@mui/material';
-import { getInitials } from '../../utils/get-initials';
+import { PoolMatchEntry } from './pool-match-entry';
 
 export const PoolListResults = ({ matches, poolers, poolResults }) => {
   return (
@@ -24,48 +24,48 @@ export const PoolListResults = ({ matches, poolers, poolResults }) => {
           <Table size="small">
             <TableHead>
               <TableRow>
+
                 <TableCell>
                   Match
                 </TableCell>
+
                 {poolers.map((pooler) => (
                 <TableCell>
                   { pooler.name }
                 </TableCell>
                 ))}
+
               </TableRow>
             </TableHead>
             <TableBody>
               {matches.map((match) => (
                 <TableRow hover>
+
                   <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                    <Tooltip title="New England Patriots">
-                      <Avatar
-                        src={`/static/images/teams/NE.png`}
-                        sx={{ mr: 1 }}
-                      />
-                    </Tooltip>
-                      VS.
-                    <Tooltip title="Miami Dolphins">
-                      <Avatar
-                        src={`/static/images/teams/MIA.png`}
-                        sx={{ mr: 1 }}
-                      />
-                    </Tooltip>
-                    </Box>
+                    <PoolMatchEntry match={ match } />
                   </TableCell>
+
                   {poolers.map((pooler) => (
                   <TableCell align="center">
                     0
                   </TableCell>
                   ))}
+
                 </TableRow>
               ))}
+
+              <TableRow hover>
+                <TableCell>
+                  Totals:
+                </TableCell>
+
+                {poolers.map((pooler) => (
+                <TableCell align="center">
+                  *total here*
+                </TableCell>
+                ))}
+              </TableRow>
+
             </TableBody>
           </Table>
         </Box>

@@ -1,5 +1,16 @@
 import { useState } from 'react'
-import { Box, Card, CardContent, CardHeader, Divider, Radio, useTheme } from '@mui/material';
+import {
+    Avatar,
+    Box,
+    Card,
+    CardContent,
+    CardHeader,
+    Divider,
+    RadioGroup,
+    Radio,
+    FormControlLabel,
+    useTheme,
+} from '@mui/material';
 import { GetTeamShortName } from '../../utils/football'
 
 export const MatchesPicker = ({ matches }) => {
@@ -8,7 +19,7 @@ export const MatchesPicker = ({ matches }) => {
 
   const handleChange = (event) => {
       var t = event.target;
-      console.log(`${t.name} -> ${t.value}`);
+      picks[t.name] = t.value;
   };
 
   return (
@@ -23,11 +34,20 @@ export const MatchesPicker = ({ matches }) => {
         >
           {matches.map((match) => (
             <Box>
+              <Avatar
+                src={`/static/images/teams/${GetTeamShortName(match.strAwayTeam)}.png`}
+                sx={{ mr: 1 }}
+              />
               { match.strAwayTeam }
-              <Radio name={match.idEvent} value={GetTeamShortName(match.strAwayTeam)} onChange={handleChange} />
-
-              <Radio name={match.idEvent} value={GetTeamShortName(match.strHomeTeam)} onChange={handleChange} />
+              <RadioGroup row name={match.idEvent} value={picks[match.idEvent]} onChange={handleChange}>
+                <FormControlLabel value={GetTeamShortName(match.strAwayTeam)} control={<Radio />} />
+                <FormControlLabel value={GetTeamShortName(match.strHomeTeam)} control={<Radio />} />
+              </RadioGroup>
               { match.strHomeTeam }
+              <Avatar
+                src={`/static/images/teams/${GetTeamShortName(match.strHomeTeam)}.png`}
+                sx={{ mr: 1 }}
+              />
             </Box>
           ))}
         </Box>

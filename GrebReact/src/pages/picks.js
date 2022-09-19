@@ -1,9 +1,9 @@
 import Head from 'next/head';
-import { Box, Container } from '@mui/material';
-import { CustomerListResults } from '../components/picks/customer-list-results';
-import { CustomerListToolbar } from '../components/picks/customer-list-toolbar';
+import { Box, Container, Grid } from '@mui/material';
+import { WeekPicker } from '../components/picks/week-picker';
+import { MatchesPicker } from '../components/picks/matches-picker';
 import { DashboardLayout } from '../components/dashboard-layout';
-import { customers } from '../__mocks__/customers';
+import { matches } from '../__mocks__/matches'
 
 const Page = () => (
   <>
@@ -20,10 +20,29 @@ const Page = () => (
       }}
     >
       <Container maxWidth={false}>
-        <CustomerListToolbar />
-        <Box sx={{ mt: 3 }}>
-          <CustomerListResults customers={customers} />
-        </Box>
+        <Grid
+          container
+          spacing={3}
+        >
+          <Grid
+            item
+            lg={8}
+            md={12}
+            xl={9}
+            xs={12}
+          >
+            <WeekPicker />
+          </Grid>
+          <Grid
+            item
+            lg={4}
+            md={6}
+            xl={3}
+            xs={12}
+          >
+            <MatchesPicker matches = { matches } />
+          </Grid>
+        </Grid>
       </Container>
     </Box>
   </>

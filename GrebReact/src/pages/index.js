@@ -1,14 +1,11 @@
 import Head from 'next/head';
-import { Box, Container, Grid } from '@mui/material';
-import { Budget } from '../components/pool/budget';
-import { LatestOrders } from '../components/pool/latest-orders';
-import { LatestProducts } from '../components/pool/latest-products';
-import { Sales } from '../components/pool/sales';
-import { TasksProgress } from '../components/pool/tasks-progress';
-import { TotalCustomers } from '../components/pool/total-customers';
-import { TotalProfit } from '../components/pool/total-profit';
-import { TrafficByDevice } from '../components/pool/traffic-by-device';
+import { Box, Container } from '@mui/material';
+import { PoolListResults } from '../components/pool/pool-list-results';
 import { DashboardLayout } from '../components/dashboard-layout';
+import { matches } from '../__mocks__/matches';
+import { poolers } from '../__mocks__/poolers';
+import { scores } from '../__mocks__/scores';
+import { totals } from '../__mocks__/totals';
 
 const Page = () => (
   <>
@@ -25,83 +22,9 @@ const Page = () => (
       }}
     >
       <Container maxWidth={false}>
-        <Grid
-          container
-          spacing={3}
-        >
-          <Grid
-            item
-            lg={3}
-            sm={6}
-            xl={3}
-            xs={12}
-          >
-            <Budget />
-          </Grid>
-          <Grid
-            item
-            xl={3}
-            lg={3}
-            sm={6}
-            xs={12}
-          >
-            <TotalCustomers />
-          </Grid>
-          <Grid
-            item
-            xl={3}
-            lg={3}
-            sm={6}
-            xs={12}
-          >
-            <TasksProgress />
-          </Grid>
-          <Grid
-            item
-            xl={3}
-            lg={3}
-            sm={6}
-            xs={12}
-          >
-            <TotalProfit sx={{ height: '100%' }} />
-          </Grid>
-          <Grid
-            item
-            lg={8}
-            md={12}
-            xl={9}
-            xs={12}
-          >
-            <Sales />
-          </Grid>
-          <Grid
-            item
-            lg={4}
-            md={6}
-            xl={3}
-            xs={12}
-          >
-            <TrafficByDevice sx={{ height: '100%' }} />
-          </Grid>
-          <Grid
-            item
-            lg={4}
-            md={6}
-            xl={3}
-            xs={12}
-          >
-            <LatestProducts sx={{ height: '100%' }} />
-          </Grid>
-          <Grid
-            item
-            lg={8}
-            md={12}
-            xl={9}
-            xs={12}
-          >
-            <LatestOrders />
-          </Grid>
-        </Grid>
+        <Box sx={{ mt: 3 }}>
+          <PoolListResults matches = { matches } poolers = { poolers } scores={ scores } totals={ totals } />
+        </Box>
       </Container>
     </Box>
   </>

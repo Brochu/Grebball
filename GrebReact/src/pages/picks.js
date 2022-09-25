@@ -19,30 +19,16 @@ const Page = () => (
         py: 8
       }}
     >
-      <Container maxWidth={false}>
-        <Grid
-          container
-          spacing={3}
-        >
-          <Grid
-            item
-            lg={8}
-            md={12}
-            xl={9}
-            xs={12}
-          >
-            <WeekPicker />
-          </Grid>
-          <Grid
-            item
-            lg={4}
-            md={6}
-            xl={3}
-            xs={12}
-          >
-            <MatchesPicker matches = { matches } />
-          </Grid>
-        </Grid>
+      <Container maxWidth="md">
+        <Box sx={{ mt: 3 }}>
+          <WeekPicker />
+        </Box>
+      </Container>
+
+      <Container maxWidth="md">
+        <Box sx={{ mt: 3 }}>
+          <MatchesPicker matches = { matches } />
+        </Box>
       </Container>
     </Box>
   </>

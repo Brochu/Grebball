@@ -1,4 +1,4 @@
-import { Button, Card, CardHeader, Divider, ButtonGroup, useTheme } from '@mui/material';
+import { Box, Button, Card, CardHeader, Divider, ButtonGroup, useTheme } from '@mui/material';
 import { GetWeekShortName } from '../../utils/football'
 
 export const WeekPicker = (props) => {
@@ -11,13 +11,17 @@ export const WeekPicker = (props) => {
     <Card {...props}>
       <CardHeader title="Pick a week" />
       <Divider />
+      <Box sx={{
+          display: 'flex',
+          justifyContent: 'center',
+      }}>
       <ButtonGroup size="small" variant="text" aria-label="text button group">
         {weeks.map((w) => (
           <Button>{ GetWeekShortName(w) }</Button>
         ))}
       </ButtonGroup>
+      </Box>
       <Divider />
-      Show the selected week
     </Card>
   );
 };

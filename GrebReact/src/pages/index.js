@@ -21,9 +21,14 @@ const Page = () => (
         py: 8
       }}
     >
-      <Container maxWidth={false}>
+      <Container maxWidth="sm">
         <Box sx={{ mt: 3 }}>
-          <PoolListResults matches = { matches } poolers = { poolers } scores={ scores } totals={ totals } />
+          <PoolListResults
+            matches = { matches }
+            poolers = { poolers }
+            scores = { scores }
+            totals = { totals }
+          />
         </Box>
       </Container>
     </Box>

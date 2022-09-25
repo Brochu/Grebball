@@ -16,6 +16,7 @@ import {
     useTheme,
 } from '@mui/material';
 import { GetTeamShortName } from '../../utils/football'
+import { TeamLogo } from '../team-logo'
 
 export const MatchesPicker = ({ matches }) => {
   const theme = useTheme();
@@ -33,7 +34,7 @@ export const MatchesPicker = ({ matches }) => {
       <CardContent>
         <Box
           sx={{
-            position: 'relative'
+            position: 'relative',
           }}
         >
           <Table size="small">
@@ -46,18 +47,24 @@ export const MatchesPicker = ({ matches }) => {
                     sx={{ mr: 1 }}
                   />
               </TableCell>
-              <TableCell>
-                  { match.strAwayTeam }
-              </TableCell>
-              <TableCell>
+
+              <TableCell align='right'>
                   <RadioGroup row name={match.idEvent} value={picks[match.idEvent]} onChange={handleChange}>
-                    <FormControlLabel value={GetTeamShortName(match.strAwayTeam)} control={<Radio />} />
-                    <FormControlLabel value={GetTeamShortName(match.strHomeTeam)} control={<Radio />} />
+                    <FormControlLabel
+                      value={GetTeamShortName(match.strAwayTeam)}
+                      label={match.strAwayTeam}
+                      labelPlacement='start'
+                      control={<Radio />}
+                    />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <FormControlLabel
+                      value={GetTeamShortName(match.strHomeTeam)}
+                      label={match.strHomeTeam}
+                      control={<Radio />}
+                    />
                   </RadioGroup>
               </TableCell>
-              <TableCell>
-                  { match.strHomeTeam }
-              </TableCell>
+
               <TableCell>
                   <Avatar
                     src={`/static/images/teams/${GetTeamShortName(match.strHomeTeam)}.png`}

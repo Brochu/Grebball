@@ -9,14 +9,10 @@ import {
     FormControlLabel,
     Radio,
     RadioGroup,
-    Table,
-    TableBody,
-    TableCell,
-    TableRow,
     useTheme,
 } from '@mui/material';
-import { GetTeamShortName } from '../../utils/football'
 import { TeamLogo } from '../team-logo'
+import { GetTeamShortName } from '../../utils/football'
 
 export const MatchesPicker = ({ matches }) => {
   const theme = useTheme();
@@ -32,49 +28,26 @@ export const MatchesPicker = ({ matches }) => {
       <CardHeader title="Create picks for Week 1" />
       <Divider />
       <CardContent>
-        <Box
-          sx={{
-            position: 'relative',
-          }}
-        >
-          <Table size="small">
-          <TableBody>
+        <Box sx={{ position: 'relative' }}>
           {matches.map((match) => (
-          <TableRow>
-              <TableCell>
-                  <Avatar
-                    src={`/static/images/teams/${GetTeamShortName(match.strAwayTeam)}.png`}
-                    sx={{ mr: 1 }}
-                  />
-              </TableCell>
-
-              <TableCell align='right'>
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <TeamLogo team = { match.strAwayTeam }></TeamLogo>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <RadioGroup row name={match.idEvent} value={picks[match.idEvent]} onChange={handleChange}>
                     <FormControlLabel
                       value={GetTeamShortName(match.strAwayTeam)}
-                      label={match.strAwayTeam}
-                      labelPlacement='start'
                       control={<Radio />}
                     />
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <FormControlLabel
                       value={GetTeamShortName(match.strHomeTeam)}
-                      label={match.strHomeTeam}
                       control={<Radio />}
                     />
                   </RadioGroup>
-              </TableCell>
 
-              <TableCell>
-                  <Avatar
-                    src={`/static/images/teams/${GetTeamShortName(match.strHomeTeam)}.png`}
-                    sx={{ mr: 1 }}
-                  />
-              </TableCell>
-          </TableRow>
+                  <TeamLogo team = { match.strHomeTeam }></TeamLogo>
+              </Box>
+
           ))}
-          </TableBody>
-          </Table>
         </Box>
       </CardContent>
     </Card>

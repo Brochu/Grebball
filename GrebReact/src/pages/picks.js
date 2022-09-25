@@ -25,7 +25,7 @@ const Page = () => (
         </Box>
       </Container>
 
-      <Container maxWidth="md">
+      <Container maxWidth="xs">
         <Box sx={{ mt: 3 }}>
           <MatchesPicker matches = { matches } />
         </Box>

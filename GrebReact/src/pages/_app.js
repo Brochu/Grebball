@@ -15,37 +15,42 @@ registerChartJs();
 const clientSideEmotionCache = createEmotionCache();
 
 const App = (props) => {
-  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+    const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
-  const getLayout = Component.getLayout ?? ((page) => page);
+    const getLayout = Component.getLayout ?? ((page) => page);
 
-  return (
-    <CacheProvider value={emotionCache}>
-      <Head>
-        <title>
-          Grebball
-        </title>
-        <meta
-          name="viewport"
-          content="initial-scale=1, width=device-width"
-        />
-      </Head>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
+    return (
+        <CacheProvider value={emotionCache}>
+
+        <Head>
+            <title>
+                Grebball
+            </title>
+
+            <meta
+                name="viewport"
+                content="initial-scale=1, width=device-width"
+            />
+        </Head>
+
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
         <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <AuthProvider>
-            <AuthConsumer>
-              {
-                (auth) => auth.isLoading
-                  ? <Fragment />
-                  : getLayout(<Component {...pageProps} />)
-              }
-            </AuthConsumer>
-          </AuthProvider>
+        <CssBaseline />
+
+        <AuthProvider>
+        <AuthConsumer>
+        {
+            (auth) => auth.isLoading
+            ? <Fragment />
+            : getLayout(<Component {...pageProps} />)
+        }
+        </AuthConsumer>
+        </AuthProvider>
+
         </ThemeProvider>
-      </LocalizationProvider>
-    </CacheProvider>
-  );
+        </LocalizationProvider>
+        </CacheProvider>
+    );
 };
 
 export default App;

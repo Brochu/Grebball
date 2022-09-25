@@ -4,7 +4,7 @@ import {
   Box,
   Tooltip,
 } from '@mui/material';
-import { GetTeamShortName } from '../../utils/football'
+import { TeamLogo } from '../team-logo'
 
 export const PoolMatchEntry = ({ match }) => {
   return (
@@ -15,21 +15,11 @@ export const PoolMatchEntry = ({ match }) => {
         fontFamily: 'monospace',
       }}
     >
-    <Tooltip title={match.strAwayTeam}>
-      <Avatar
-        src={`/static/images/teams/${GetTeamShortName(match.strAwayTeam)}.png`}
-        sx={{ mr: 1 }}
-      />
-    </Tooltip>
+    <TeamLogo team = { match.strAwayTeam } />
       { match.intAwayScore }
       | VS. |
       { match.intHomeScore }
-    <Tooltip title={match.strHomeTeam}>
-      <Avatar
-        src={`/static/images/teams/${GetTeamShortName(match.strHomeTeam)}.png`}
-        sx={{ mr: 1 }}
-      />
-    </Tooltip>
+    <TeamLogo team = { match.strHomeTeam } />
     </Box>
   );
 };

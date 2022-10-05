@@ -74,4 +74,5 @@ def create():
         'pooler_id': dumps(ObjectId(request.form['pooler_id'])),
         'pickstring': dumps(picks),
     }
+    #TODO: Send actual request to Mongo to add the picks
     return pickObj

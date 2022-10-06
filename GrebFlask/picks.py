@@ -1,6 +1,6 @@
 from bson.json_util import loads, dumps
 from bson import ObjectId
-from flask import Blueprint, session, render_template, request
+from flask import Blueprint, session, render_template, request, redirect
 
 from database import DB
 from football import GetWeek, GetTeamShortName, GetWeekLongName, GetWeekName
@@ -69,10 +69,12 @@ def create():
         picks[matchid] = request.form[matchid] if matchid in request.form else ''
 
     pickObj = {
-        'season': request.form['season'],
-        'week': request.form['week'],
-        'pooler_id': dumps(ObjectId(request.form['pooler_id'])),
+        'season': int(request.form['season']),
+        'week': int(request.form['week']),
+        'pooler_id': ObjectId(request.form['pooler_id']),
         'pickstring': dumps(picks),
     }
-    #TODO: Send actual request to Mongo to add the picks
-    return pickObj
+
+    # Insert new picks in the database
+    DB.picks.insert_one(pickObj)
+    return redirect('/pools')

@@ -56,7 +56,7 @@ def goodbye():
     session.clear()
     return redirect('/', 302)
 
-if __name__ == "__main__":
+def run():
     load_dotenv()
     port = int(os.environ.get('PORT', 5000))
 

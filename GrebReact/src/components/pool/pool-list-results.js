@@ -3,79 +3,80 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import {
-  Avatar,
-  Box,
-  Card,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-  Tooltip,
+    Avatar,
+    Box,
+    Card,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    Typography,
+    Tooltip,
 } from '@mui/material';
 import { PoolMatchEntry } from './pool-match-entry';
 
 export const PoolListResults = ({ matches, poolers, scores, totals }) => {
-  return (
-    <Card>
-      <PerfectScrollbar>
+    return (
+        <Card>
+        <PerfectScrollbar>
         <Box>
-          <Table size="small">
+        <Table size="small">
             <TableHead>
-              <TableRow>
+                <TableRow>
 
-                <TableCell>
-                  Match
-                </TableCell>
+                    <TableCell>
+                    Match
+                    </TableCell>
 
-                {poolers.map((pooler) => (
-                <TableCell>
-                  { pooler.name }
-                </TableCell>
-                ))}
-
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {matches.map((match) => (
-                <TableRow hover>
-
-                  <TableCell>
-                    <PoolMatchEntry match={ match } />
-                  </TableCell>
-
-                  {poolers.map((pooler) => (
-                  <TableCell align="center">
-                    { scores[pooler._id][match.idEvent] }
-                  </TableCell>
-                  ))}
+                    {poolers.map((pooler) => (
+                        <TableCell>
+                            { pooler.name }
+                        </TableCell>
+                    ))}
 
                 </TableRow>
-              ))}
+            </TableHead>
+            <TableBody>
 
-              <TableRow hover>
-                <TableCell>
-                  Totals:
-                </TableCell>
+                {matches.map((match) => (
+                    <TableRow hover>
 
-                {poolers.map((pooler) => (
-                <TableCell align="center">
-                  { totals[pooler._id] }
-                </TableCell>
+                    <TableCell>
+                        <PoolMatchEntry match={ match } />
+                    </TableCell>
+
+                    {poolers.map((pooler) => (
+                        <TableCell align="center">
+                            { scores[pooler._id][match.idEvent] }
+                        </TableCell>
+                    ))}
+
+                    </TableRow>
                 ))}
-              </TableRow>
+
+                <TableRow hover>
+                    <TableCell>
+                        Totals:
+                    </TableCell>
+
+                    {poolers.map((pooler) => (
+                        <TableCell align="center">
+                            { totals[pooler._id] }
+                        </TableCell>
+                    ))}
+                </TableRow>
 
             </TableBody>
-          </Table>
+        </Table>
         </Box>
-      </PerfectScrollbar>
-    </Card>
-  );
+        </PerfectScrollbar>
+        </Card>
+    );
 };
 
 PoolListResults.propTypes = {
-  matches: PropTypes.array.isRequired,
-  poolers: PropTypes.array.isRequired,
-  scores: PropTypes.array.isRequired,
+    matches: PropTypes.array.isRequired,
+    poolers: PropTypes.array.isRequired,
+    scores: PropTypes.array.isRequired,
 };

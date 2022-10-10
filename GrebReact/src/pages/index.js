@@ -8,37 +8,37 @@ import { scores } from '../__mocks__/scores';
 import { totals } from '../__mocks__/totals';
 
 const Page = () => (
-  <>
+    <>
     <Head>
-      <title>
-        Pool | Grebball
-      </title>
+        <title>
+            Pool | Grebball
+        </title>
     </Head>
     <Box
-      component="main"
-      sx={{
-        flexGrow: 1,
-        py: 8
-      }}
+        component="main"
+        sx={{
+            flexGrow: 1,
+                py: 8
+        }}
     >
-      <Container maxWidth="sm">
+        <Container maxWidth="sm">
         <Box sx={{ mt: 3 }}>
-          <PoolListResults
-            matches = { matches }
-            poolers = { poolers }
-            scores = { scores }
-            totals = { totals }
-          />
+            <PoolListResults
+                matches = { matches }
+                poolers = { poolers }
+                scores = { scores }
+                totals = { totals }
+            />
         </Box>
-      </Container>
+        </Container>
     </Box>
-  </>
+    </>
 );
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
-    {page}
-  </DashboardLayout>
+    <DashboardLayout>
+        {page}
+    </DashboardLayout>
 );
 
 export default Page;

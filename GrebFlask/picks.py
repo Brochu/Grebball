@@ -11,6 +11,7 @@ MAX_WEEK = 22
 #TODO: Remove test user
 poolerid = ObjectId('5f70f0ffd8e2db255c9a0df6')
 
+#TODO: Remove this route when we can work with the frontend
 @PicksBlueprint.route('/picks/new/<strseason>/<strweek>')
 def new(strseason, strweek):
     season = int(strseason)

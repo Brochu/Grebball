@@ -21,6 +21,7 @@ export const MatchesPicker = ({ matches }) => {
     const handleChange = (event) => {
         var t = event.target;
         picks[t.name] = t.value;
+        console.log(picks);
     };
 
     return (
@@ -30,27 +31,24 @@ export const MatchesPicker = ({ matches }) => {
         <Divider />
 
         <CardContent>
-        <Box sx={{ position: 'relative' }}>
-            {matches.map((match) => (
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <TeamLogo team = { match.strAwayTeam }></TeamLogo>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        {matches.map((match) => (
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
 
-                    <RadioGroup row name={match.idEvent} value={picks[match.idEvent]} onChange={handleChange}>
-                        <FormControlLabel
-                            value={GetTeamShortName(match.strAwayTeam)}
-                            control={<Radio />}
-                        />
-                        <FormControlLabel
-                            value={GetTeamShortName(match.strHomeTeam)}
-                            control={<Radio />}
-                        />
-                    </RadioGroup>
+            <TeamLogo team = { match.strAwayTeam } />
+            <RadioGroup row={true} name={match.idEvent} value={picks[match.idEvent]} onChange={handleChange}>
+                <FormControlLabel
+                    value={GetTeamShortName(match.strAwayTeam)}
+                    control={<Radio />}
+                />
+                <FormControlLabel
+                    value={GetTeamShortName(match.strHomeTeam)}
+                    control={<Radio />}
+                />
+            </RadioGroup>
+            <TeamLogo team = { match.strHomeTeam } />
 
-                    <TeamLogo team = { match.strHomeTeam }></TeamLogo>
-                </Box>
-            ))}
-        </Box>
+            </Box>
+        ))}
         </CardContent>
         </Card>
     );

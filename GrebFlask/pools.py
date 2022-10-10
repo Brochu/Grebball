@@ -2,7 +2,7 @@ from bson.json_util import loads
 from bson import ObjectId
 from flask import Blueprint, session, render_template
 
-from database import DB
+from database import DB, FindCurrentWeek
 from football import GetWeek, GetTeamShortName, GetWeekLongName
 
 PoolsBlueprint = Blueprint('pools_blueprint', __name__)
@@ -13,37 +13,16 @@ poolerid = ObjectId('5f70f0ffd8e2db255c9a0df6')
 @PoolsBlueprint.route('/pools')
 def index():
     [season, week] = FindCurrentWeek()
-    weekdata = GetWeek(season, week)
-
-    # pooler = loads(session['pooler'])
-    pooler = DB.poolers.find({ '_id': poolerid })[0]
-    pool = DB.pools.find({ '_id': pooler['pool_id'] })[0]
-    poolers = list(DB.poolers.find({ 'pool_id': pooler['pool_id'] }))
-
-    allpicks = FetchAllPicks(poolers, season, week, weekdata)
-    [allscores, alltotals] = CalcWeekResults(weekdata, allpicks, week)
-
-    #TODO: Fix this with post season
-    bgcolors = ['red', 'gray', 'green', 'yellow']
-
-    return render_template('home.html',
-        GetTeamShortName = GetTeamShortName,
-        GetWeekLongName = GetWeekLongName,
-        season = season,
-        week = week,
-        pooldata = pool,
-        weekdata = weekdata,
-        poolers = poolers,
-        picksdata = allpicks,
-        allscores = allscores,
-        alltotals = alltotals,
-        bgcolors = bgcolors,
-    )
+    return ShowPoolStatus(season, week)
 
 @PoolsBlueprint.route('/pools/<strseason>/<strweek>')
 def get(strseason, strweek):
     season = int(strseason)
     week = int(strweek)
+
+    return ShowPoolStatus(season, week)
+
+def ShowPoolStatus(season, week):
     weekdata = GetWeek(season, week)
 
     # pooler = loads(session['pooler'])
@@ -51,6 +30,7 @@ def get(strseason, strweek):
     pool = DB.pools.find({ '_id': pooler['pool_id'] })[0]
     poolers = list(DB.poolers.find({ 'pool_id': pooler['pool_id'] }))
 
+    #TODO: Try and combine all data in one structure to send to the template
     allpicks = FetchAllPicks(poolers, season, week, weekdata)
     [allscores, alltotals] = CalcWeekResults(weekdata, allpicks, week)
 
@@ -59,47 +39,18 @@ def get(strseason, strweek):
 
     return render_template('home.html',
         GetTeamShortName = GetTeamShortName,
-        GetWeekLongName = GetWeekLongName,
+
+        poolname = pool['name'],
         season = season,
-        week = week,
-        pooldata = pool,
-        weekdata = weekdata,
+        week = GetWeekLongName(week),
+
         poolers = poolers,
+        weekdata = weekdata,
         picksdata = allpicks,
         allscores = allscores,
         alltotals = alltotals,
         bgcolors = bgcolors,
     )
-
-def FindCurrentWeek():
-    seasonPipeline = [{
-        '$group': {
-            '_id': '$pooler_id',
-            'season_max': { '$max': '$season' },
-        }
-    }]
-
-    maxseason = 1900
-    for s in DB.picks.aggregate(seasonPipeline):
-        if s['season_max'] > maxseason:
-            maxseason = s['season_max']
-
-    weekPipeline = [{
-        '$match': { 'season': maxseason }
-    },
-    {
-        '$group': {
-            '_id': '$season',
-            'week_max': { '$max': '$week' },
-        }
-    }]
-
-    maxweek = 0
-    for s in DB.picks.aggregate(weekPipeline):
-        if s['week_max'] > maxweek:
-            maxweek = s['week_max']
-
-    return maxseason, maxweek
 
 def FetchAllPicks(poolers, season, week, weekdata):
     allpicks = {}

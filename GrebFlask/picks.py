@@ -3,42 +3,13 @@ from bson import ObjectId
 from flask import Blueprint, session, render_template, request, redirect
 
 from database import DB
-from football import GetWeek, GetTeamShortName, GetWeekLongName, GetWeekName
-from pools import FindCurrentWeek
+from football import GetWeek, GetTeamShortName, GetWeekLongName
 
 PicksBlueprint = Blueprint('picks_blueprint', __name__)
 
 MAX_WEEK = 22
 #TODO: Remove test user
 poolerid = ObjectId('5f70f0ffd8e2db255c9a0df6')
-
-@PicksBlueprint.route('/picks')
-def index():
-    #pooler = loads(session['pooler'])
-    pooler = DB.poolers.find({ '_id': poolerid })[0]
-    [season, _] = FindCurrentWeek()
-
-    seasonpicks = list(DB.picks.find(
-        filter = {
-        'pooler_id': pooler['_id'],
-        'season': season,
-        },
-        sort = [("week", 1)],
-    ))
-
-    picksmap = {}
-    for i in range(MAX_WEEK):
-        if i < len(seasonpicks):
-            picksmap[i+1] = seasonpicks[i]
-        else:
-            picksmap[i+1] = None
-
-    return render_template('picks.index.html',
-        GetWeekName = GetWeekName,
-        pooler = pooler,
-        season = season,
-        picksmap = picksmap,
-    )
 
 @PicksBlueprint.route('/picks/new/<strseason>/<strweek>')
 def new(strseason, strweek):

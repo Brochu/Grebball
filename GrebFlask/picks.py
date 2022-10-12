@@ -1,9 +1,9 @@
 from bson.json_util import loads, dumps
 from bson import ObjectId
-from flask import Blueprint, session, render_template, request, redirect
+from flask import Blueprint, session, request, redirect
 
-from database import DB
-from football import GetWeek, GetTeamShortName, GetWeekLongName
+from database import FindCurrentWeek, InsertNewPicks
+from football import GetWeek
 
 PicksBlueprint = Blueprint('picks_blueprint', __name__)
 
@@ -11,28 +11,17 @@ MAX_WEEK = 22
 #TODO: Remove test user
 poolerid = ObjectId('5f70f0ffd8e2db255c9a0df6')
 
-#TODO: Remove this route when we can work with the frontend
+@PicksBlueprint.route('/picks')
+def newPicksIndex():
+    [season, week] = FindCurrentWeek()
+    return { 'season': season, 'week': week }
+
 @PicksBlueprint.route('/picks/new/<strseason>/<strweek>')
-def new(strseason, strweek):
+def newPicks(strseason, strweek):
     season = int(strseason)
     week = int(strweek)
-    weekdata = GetWeek(season, week)
-    matchids = [m['idEvent'] for m in weekdata]
 
-    #pooler = loads(session['pooler'])
-    pooler = DB.poolers.find({ '_id': poolerid })[0]
-    pool = DB.pools.find({ '_id': pooler['pool_id'] })[0]
-
-    return render_template('picks.new.html',
-        GetTeamShortName = GetTeamShortName,
-        GetWeekLongName = GetWeekLongName,
-        season = season,
-        week = week,
-        weekdata = weekdata,
-        matchids = dumps(matchids),
-        pooler = pooler,
-        pooldata = pool,
-    )
+    return GetWeek(season, week)
 
 @PicksBlueprint.route('/picks/create', methods=['POST'])
 def create():
@@ -48,5 +37,6 @@ def create():
     }
 
     # Insert new picks in the database
-    DB.picks.insert_one(pickObj)
+    InsertNewPicks(pickObj)
+
     return redirect('/pools')

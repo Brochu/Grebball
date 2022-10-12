@@ -3,13 +3,10 @@ from pymongo import MongoClient
 
 DB = MongoClient(os.environ.get('MONGO_URL'))[str(os.environ.get('MONGO_DB_NAME'))]
 
-def GetPoolers():
-    for pooler in DB.poolers.find():
-        name = pooler['name']
-        fav = pooler['favTeam']
-        print(f' : {name} => {fav}')
+def FindPoolerById(poolerId):
+    foundPoolers = list(DB.poolers.find({ '_id': poolerId }))
 
-    return {}
+    return foundPoolers[0] if len(foundPoolers) > 0 else {}
 
 def FindCurrentWeek():
     seasonPipeline = [{
@@ -40,3 +37,13 @@ def FindCurrentWeek():
             maxweek = s['week_max']
 
     return maxseason, maxweek
+
+def FindPoolerPickForWeek(poolerId, season, week):
+    return list(DB.picks.find({
+        'pooler_id': poolerId,
+        'season': season,
+        'week': week
+    }))
+
+def InsertNewPicks(pickObj):
+    DB.picks.insert_one(pickObj)

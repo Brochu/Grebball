@@ -1,9 +1,11 @@
 from bson.json_util import loads, dumps
 from bson import ObjectId
-from flask import Blueprint, session, request, redirect
+from flask import Blueprint, session, request
 
 from database import FindCurrentWeek, InsertNewPicks
 from football import GetWeek
+
+from pprint import pprint
 
 PicksBlueprint = Blueprint('picks_blueprint', __name__)
 
@@ -25,18 +27,23 @@ def newPicks(strseason, strweek):
 
 @PicksBlueprint.route('/picks/create', methods=['POST'])
 def create():
+    payload = request.get_json()
+
     picks = {}
-    for matchid in loads(request.form['matchids']):
-        picks[matchid] = request.form[matchid] if matchid in request.form else ''
+    for matchid in loads(payload['matchids']):
+        picks[matchid] = payload[matchid] if matchid in payload else ''
 
     pickObj = {
-        'season': int(request.form['season']),
-        'week': int(request.form['week']),
-        'pooler_id': ObjectId(request.form['pooler_id']),
+        'season': int(payload['season']),
+        'week': int(payload['week']),
+        'pooler_id': ObjectId(payload['pooler_id']),
         'pickstring': dumps(picks),
     }
 
     # Insert new picks in the database
     InsertNewPicks(pickObj)
 
-    return redirect('/pools')
+    return {
+        'success': True,
+        'errorcode': 0,
+    }

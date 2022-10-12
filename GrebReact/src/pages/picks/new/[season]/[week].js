@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { Box, Container, Grid } from '@mui/material';
-import { WeekPicker } from '../components/picks/week-picker';
-import { DashboardLayout } from '../components/dashboard-layout';
+import { MatchesPicker } from '../../../../components/picks/matches-picker';
+import { DashboardLayout } from '../../../../components/dashboard-layout';
 
 const Page = () => (
     <>
@@ -17,8 +17,10 @@ const Page = () => (
                 py: 8
         }}
     >
-        <Container maxWidth="md">
-            <WeekPicker />
+        <Container maxWidth="xs">
+            <Box sx={{ mt: 3 }}>
+                <MatchesPicker />
+            </Box>
         </Container>
 
     </Box>

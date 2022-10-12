@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from flask import Flask, render_template, url_for, session, redirect
+from flask_cors import CORS
 from authlib.integrations.flask_client import OAuth
 from bson.json_util import dumps
 
@@ -10,7 +11,9 @@ from pools import PoolsBlueprint
 from picks import PicksBlueprint
 
 app = Flask(__name__)
+CORS(app)
 app.secret_key = os.urandom(12)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Register different controllers
 app.register_blueprint(PoolsBlueprint)

@@ -55,7 +55,7 @@ export const PoolListResults = ({ season = 9999, week = 99 }) => {
         if (score === 0) return 'red';
         else if (score === 1) return 'gray';
         else if (score === 2) return 'green';
-        else return 'yellow';
+        else return 'blue';
     }
 
     return (
@@ -63,69 +63,67 @@ export const PoolListResults = ({ season = 9999, week = 99 }) => {
         <PerfectScrollbar>
         <Box>
             <Table size="small">
-                <TableHead>
-                    <TableRow key="Header">
+            <TableHead>
+            <TableRow key="Header">
 
-                        <TableCell key="MatchLabel">
-                        Match
-                        </TableCell>
+                <TableCell key="MatchLabel">
+                Match
+                </TableCell>
 
-                        {results.map((res) => (
-                            <TableCell key={res['pid']} align="center">
-                                { poolers[res['pid']] }
-                            </TableCell>
-                        ))}
-
-                    </TableRow>
-                </TableHead>
-
-                <TableBody>
-
-                {matches.map((match) => (
-                    <TableRow key={match['idEvent']} hover>
-
-                    <TableCell key="MatchEntry">
-                        <PoolMatchEntry match={ match } />
+                {results.map((res) => (
+                    <TableCell key={res['pid']} align="center">
+                        { poolers[res['pid']] }
                     </TableCell>
-
-                    {results.map((res) => (
-                        <TableCell key={res['pid']} align="center">
-                            <Badge
-                                showZero="true"
-                                variant="dot"
-                                badgeContent={res['scores'][match['idEvent']]['score']}
-                                sx=
-                                {{
-                                    "& .MuiBadge-badge": {
-                                        backgroundColor: GetScoreColor(res['scores'][match['idEvent']]['score'])
-                                    }
-                                }}
-                            >
-
-                                <TeamPick team = { res['scores'][match['idEvent']]['pick'] } />
-
-                            </Badge>
-                        </TableCell>
-                    ))}
-
-                    </TableRow>
                 ))}
 
-                <TableRow key="Totals" hover>
+            </TableRow>
+            </TableHead>
 
-                    <TableCell key="TotalLabel">
-                        Totals:
+            <TableBody>
+            {matches.map((match) => (
+                <TableRow key={match['idEvent']} hover>
+
+                <TableCell key="MatchEntry">
+                    <PoolMatchEntry match={ match } />
+                </TableCell>
+
+                {results.map((res) => (
+                    <TableCell key={res['pid']} align="center">
+                        <Badge
+                            showZero="true"
+                            variant="dot"
+                            badgeContent={res['scores'][match['idEvent']]['score']}
+                            sx=
+                            {{
+                                "& .MuiBadge-badge": {
+                                    backgroundColor: GetScoreColor(res['scores'][match['idEvent']]['score'])
+                                }
+                            }}
+                        >
+
+                            <TeamPick team = { res['scores'][match['idEvent']]['pick'] } />
+
+                        </Badge>
                     </TableCell>
-
-                    {results.map((res) => (
-                        <TableCell key={res['pid']} align="center">
-                            { res['total'] }
-                        </TableCell>
-                    ))}
+                ))}
 
                 </TableRow>
+            ))}
 
-                </TableBody>
+            <TableRow key="Totals" hover>
+
+                <TableCell key="TotalLabel">
+                    Totals:
+                </TableCell>
+
+                {results.map((res) => (
+                    <TableCell key={res['pid']} align="center">
+                        { res['total'] }
+                    </TableCell>
+                ))}
+
+            </TableRow>
+            </TableBody>
             </Table>
         </Box>
         </PerfectScrollbar>

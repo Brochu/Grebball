@@ -7,6 +7,14 @@ import {
 import { TeamLogo } from '../team-logo'
 
 export const PoolMatchEntry = ({ match }) => {
+    const PaddedScore = (score) => {
+        if (score) {
+            return score.padStart(2, 0);
+        } else {
+            return '--';
+        }
+    }
+
     return (
         <Box
             sx={{
@@ -16,11 +24,11 @@ export const PoolMatchEntry = ({ match }) => {
             }}
         >
             <TeamLogo team = { match.strAwayTeam } />
-
-            { match.intAwayScore }
+            &nbsp;
+            { PaddedScore(match.intAwayScore) }
             | VS. |
-            { match.intHomeScore }
-
+            { PaddedScore(match.intHomeScore) }
+            &nbsp;
             <TeamLogo team = { match.strHomeTeam } />
         </Box>
     );

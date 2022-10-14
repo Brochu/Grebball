@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
     Avatar,
+    Badge,
     Box,
     Card,
     Table,
@@ -50,6 +51,13 @@ export const PoolListResults = ({ season = 9999, week = 99 }) => {
         return () => setup = false;
     }, []);
 
+    const GetScoreColor = (score) => {
+        if (score === 0) return 'red';
+        else if (score === 1) return 'gray';
+        else if (score === 2) return 'green';
+        else return 'yellow';
+    }
+
     return (
         <Card>
         <PerfectScrollbar>
@@ -82,7 +90,21 @@ export const PoolListResults = ({ season = 9999, week = 99 }) => {
 
                     {results.map((res) => (
                         <TableCell key={res['pid']} align="center">
-                            <TeamPick team = { res['scores'][match['idEvent']]['pick'] } />
+                            <Badge
+                                showZero="true"
+                                variant="dot"
+                                badgeContent={res['scores'][match['idEvent']]['score']}
+                                sx=
+                                {{
+                                    "& .MuiBadge-badge": {
+                                        backgroundColor: GetScoreColor(res['scores'][match['idEvent']]['score'])
+                                    }
+                                }}
+                            >
+
+                                <TeamPick team = { res['scores'][match['idEvent']]['pick'] } />
+
+                            </Badge>
                         </TableCell>
                     ))}
 

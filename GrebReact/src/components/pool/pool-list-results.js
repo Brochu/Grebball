@@ -1,7 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import PropTypes from 'prop-types';
-import { format } from 'date-fns';
 import {
     Avatar,
     Box,
@@ -14,69 +12,101 @@ import {
     Typography,
     Tooltip,
 } from '@mui/material';
-import { PoolMatchEntry } from './pool-match-entry';
 
-export const PoolListResults = ({ matches, poolers, scores, totals }) => {
+import { PoolMatchEntry } from './pool-match-entry';
+import { TeamLogo } from '../team-logo'
+import { TeamPick } from '../team-pick'
+
+export const PoolListResults = ({ season = 9999, week = 99 }) => {
+    const [matches, setMatches] = useState([]);
+    const [results, setResults] = useState([]);
+    const [poolers, setPoolers] = useState({});
+
+    useEffect(() => {
+        let setup = true;
+
+        if (season === 9999) {
+            fetch(`http://localhost:5000/pools`)
+                .then( res => res.json() )
+                .then( data => {
+                    if (setup) {
+                        setMatches(data['matches']);
+                        setResults(data['results']);
+                        setPoolers(data['poolernames']);
+                    }
+                });
+        } else {
+            fetch(`http://localhost:5000/pools/${season}/${week}`)
+                .then( res => res.json() )
+                .then( data => {
+                    if (setup) {
+                        setMatches(data['matches']);
+                        setResults(data['results']);
+                        setPoolers(data['poolernames']);
+                    }
+                });
+        }
+
+        return () => setup = false;
+    }, []);
+
     return (
         <Card>
         <PerfectScrollbar>
         <Box>
-        <Table size="small">
-            <TableHead>
-                <TableRow>
+            <Table size="small">
+                <TableHead>
+                    <TableRow key="Header">
 
-                    <TableCell>
-                    Match
-                    </TableCell>
-
-                    {poolers.map((pooler) => (
-                        <TableCell>
-                            { pooler.name }
+                        <TableCell key="MatchLabel">
+                        Match
                         </TableCell>
-                    ))}
 
-                </TableRow>
-            </TableHead>
-            <TableBody>
+                        {results.map((res) => (
+                            <TableCell key={res['pid']} align="center">
+                                { poolers[res['pid']] }
+                            </TableCell>
+                        ))}
+
+                    </TableRow>
+                </TableHead>
+
+                <TableBody>
 
                 {matches.map((match) => (
-                    <TableRow hover>
+                    <TableRow key={match['idEvent']} hover>
 
-                    <TableCell>
+                    <TableCell key="MatchEntry">
                         <PoolMatchEntry match={ match } />
                     </TableCell>
 
-                    {poolers.map((pooler) => (
-                        <TableCell align="center">
-                            { scores[pooler._id][match.idEvent] }
+                    {results.map((res) => (
+                        <TableCell key={res['pid']} align="center">
+                            <TeamPick team = { res['scores'][match['idEvent']]['pick'] } />
                         </TableCell>
                     ))}
 
                     </TableRow>
                 ))}
 
-                <TableRow hover>
-                    <TableCell>
+                <TableRow key="Totals" hover>
+
+                    <TableCell key="TotalLabel">
                         Totals:
                     </TableCell>
 
-                    {poolers.map((pooler) => (
-                        <TableCell align="center">
-                            { totals[pooler._id] }
+                    {results.map((res) => (
+                        <TableCell key={res['pid']} align="center">
+                            { res['total'] }
                         </TableCell>
                     ))}
+
                 </TableRow>
 
-            </TableBody>
-        </Table>
+                </TableBody>
+            </Table>
         </Box>
         </PerfectScrollbar>
         </Card>
     );
-};
-
-PoolListResults.propTypes = {
-    matches: PropTypes.array.isRequired,
-    poolers: PropTypes.array.isRequired,
-    scores: PropTypes.array.isRequired,
 };

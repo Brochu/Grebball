@@ -1,10 +1,15 @@
 import Head from 'next/head';
+import { useRouter } from 'next/router'
 import { Box, Container } from '@mui/material';
 
-import { PoolListResults } from '../components/pool/pool-list-results';
-import { DashboardLayout } from '../components/dashboard-layout';
+import { PoolListResults } from '../../../components/pool/pool-list-results';
+import { DashboardLayout } from '../../../components/dashboard-layout';
 
-const Page = () => (
+const Page = () => {
+    const router = useRouter();
+    const q = router.query;
+
+    return (
     <>
     <Head>
         <title>
@@ -20,12 +25,13 @@ const Page = () => (
     >
         <Container maxWidth="sm">
         <Box sx={{ mt: 3 }}>
-            <PoolListResults />
+            <PoolListResults season={q.season} week={q.week} />
         </Box>
         </Container>
     </Box>
     </>
-);
+    );
+};
 
 Page.getLayout = (page) => (
     <DashboardLayout>

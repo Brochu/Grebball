@@ -1,12 +1,16 @@
 import os
+
+from bson.json_util import loads
 from pymongo import MongoClient
 
 DB = MongoClient(os.environ.get('MONGO_URL'))[str(os.environ.get('MONGO_DB_NAME'))]
 
-def FindPoolerById(poolerId):
-    foundPoolers = list(DB.poolers.find({ '_id': poolerId }))
+def FindPoolInfoByPooler(pooler):
+    pool = DB.pools.find({ '_id': pooler['pool_id'] })[0]
+    del pool['_id']
 
-    return foundPoolers[0] if len(foundPoolers) > 0 else {}
+    poolers = list(DB.poolers.find({ 'pool_id': pooler['pool_id'] }))
+    return (pool, poolers)
 
 def FindCurrentWeek():
     seasonPipeline = [{
@@ -38,12 +42,24 @@ def FindCurrentWeek():
 
     return maxseason, maxweek
 
-def FindPoolerPickForWeek(poolerId, season, week):
-    return list(DB.picks.find({
-        'pooler_id': poolerId,
-        'season': season,
-        'week': week
-    }))
+def FindPoolPicksForWeek(season, week, poolers, matchids):
+    poolerids = []
+    picks = []
+
+    for p in poolers:
+        poolerids.append(str(p['_id']))
+        possiblepicks = list(DB.picks.find({
+            'pooler_id': p['_id'],
+            'season': season,
+            'week': week
+        }))
+
+        if len(possiblepicks) > 0:
+            picks.append(loads(possiblepicks[0]['pickstring']))
+        else:
+            picks.append({ m:'na' for m in matchids })
+
+    return dict(zip(poolerids, picks))
 
 def InsertNewPicks(pickObj):
     DB.picks.insert_one(pickObj)

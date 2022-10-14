@@ -10,8 +10,7 @@ export const TeamLogo = ({ team }) => {
         <Tooltip title={team}>
             <Box
                 component="img"
-                sx={{ height: 50, width: 50 }}
-                alt="The house from the offer."
+                sx={{ height: 40, width: 40 }}
                 src={`/static/images/teams/${GetTeamShortName(team)}.png`}
             />
         </Tooltip>

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { Box, Container } from '@mui/material';
 
 import { PoolListResults } from '../../../components/pool/pool-list-results';
+import { WeekList } from '../../../components/pool/week-list';
 import { DashboardLayout } from '../../../components/dashboard-layout';
 
 const Page = () => {
@@ -23,10 +24,12 @@ const Page = () => {
                 py: 8
         }}
     >
+        <WeekList />
+
         <Container maxWidth="sm">
-        <Box sx={{ mt: 3 }}>
-            <PoolListResults season={q.season} week={q.week} />
-        </Box>
+            <Box sx={{ mt: 3 }}>
+                <PoolListResults season={q.season} week={q.week} />
+            </Box>
         </Container>
     </Box>
     </>

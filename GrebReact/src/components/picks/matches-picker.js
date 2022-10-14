@@ -56,6 +56,7 @@ export const MatchesPicker = () => {
         payload['matchids'] = JSON.stringify(matchIds);
         payload['season'] = q.season;
         payload['week'] = q.week;
+        //TODO: Find a way to store the current logged in user id to use here
         payload['pooler_id'] = '5f70f0ffd8e2db255c9a0df6';
 
         fetch(`http://localhost:5000/picks/create`, {

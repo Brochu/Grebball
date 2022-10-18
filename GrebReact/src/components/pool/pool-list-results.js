@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
     Avatar,
     Badge,
     Box,
     Card,
+    CardHeader,
     Table,
     TableBody,
     TableCell,
@@ -18,10 +18,13 @@ import { PoolMatchEntry } from './pool-match-entry';
 import { TeamLogo } from '../team-logo'
 import { TeamPick } from '../team-pick'
 
+import { GetWeekLongName } from '../../utils/football'
+
 export const PoolListResults = ({ season = 9999, week = 99 }) => {
     const [matches, setMatches] = useState([]);
     const [results, setResults] = useState([]);
     const [poolers, setPoolers] = useState({});
+    const [weekdata, setWeekdata] = useState({});
 
     useEffect(() => {
         let setup = true;
@@ -34,6 +37,7 @@ export const PoolListResults = ({ season = 9999, week = 99 }) => {
                         setMatches(data['matches']);
                         setResults(data['results']);
                         setPoolers(data['poolernames']);
+                        setWeekdata(data['weekdata']);
                     }
                 });
         } else {
@@ -44,12 +48,21 @@ export const PoolListResults = ({ season = 9999, week = 99 }) => {
                         setMatches(data['matches']);
                         setResults(data['results']);
                         setPoolers(data['poolernames']);
+                        setWeekdata(data['weekdata']);
                     }
                 });
         }
 
         return () => setup = false;
     }, []);
+
+    const GetCardHeaderTitle = (weekdata) => {
+        if (weekdata['season'] && weekdata['week']) {
+            return `${weekdata['season']} - ${GetWeekLongName(weekdata['week'])}`
+        }
+
+        return '';
+    }
 
     const GetScoreColor = (score) => {
         if (score === 0) return 'red';
@@ -60,73 +73,73 @@ export const PoolListResults = ({ season = 9999, week = 99 }) => {
 
     return (
         <Card>
-        <PerfectScrollbar>
-        <Box>
-            <Table size="small">
-            <TableHead>
-            <TableRow key="Header">
+            <CardHeader title={ GetCardHeaderTitle(weekdata) } />
 
-                <TableCell key="MatchLabel">
-                Match
-                </TableCell>
+            <Box>
+                <Table size="small">
+                <TableHead>
+                <TableRow key="Header">
 
-                {results.map((res) => (
-                    <TableCell key={res['pid']} align="center">
-                        { poolers[res['pid']] }
+                    <TableCell key="MatchLabel">
+                    Match
                     </TableCell>
-                ))}
 
-            </TableRow>
-            </TableHead>
-
-            <TableBody>
-            {matches.map((match) => (
-                <TableRow key={match['idEvent']} hover>
-
-                <TableCell key="MatchEntry">
-                    <PoolMatchEntry match={ match } />
-                </TableCell>
-
-                {results.map((res) => (
-                    <TableCell key={res['pid']} align="center">
-                        <Badge
-                            showZero="true"
-                            variant="dot"
-                            badgeContent={res['scores'][match['idEvent']]['score']}
-                            sx=
-                            {{
-                                "& .MuiBadge-badge": {
-                                    backgroundColor: GetScoreColor(res['scores'][match['idEvent']]['score'])
-                                }
-                            }}
-                        >
-
-                            <TeamPick team = { res['scores'][match['idEvent']]['pick'] } />
-
-                        </Badge>
-                    </TableCell>
-                ))}
+                    {results.map((res) => (
+                        <TableCell key={res['pid']} align="center">
+                            { poolers[res['pid']] }
+                        </TableCell>
+                    ))}
 
                 </TableRow>
-            ))}
+                </TableHead>
 
-            <TableRow key="Totals" hover>
+                <TableBody>
+                {matches.map((match) => (
+                    <TableRow key={match['idEvent']} hover>
 
-                <TableCell key="TotalLabel">
-                    Totals:
-                </TableCell>
-
-                {results.map((res) => (
-                    <TableCell key={res['pid']} align="center">
-                        { res['total'] }
+                    <TableCell key="MatchEntry">
+                        <PoolMatchEntry match={ match } />
                     </TableCell>
+
+                    {results.map((res) => (
+                        <TableCell key={res['pid']} align="center">
+                            <Badge
+                                showZero={true}
+                                variant="dot"
+                                badgeContent={res['scores'][match['idEvent']]['score']}
+                                sx=
+                                {{
+                                    "& .MuiBadge-badge": {
+                                        backgroundColor: GetScoreColor(res['scores'][match['idEvent']]['score'])
+                                    }
+                                }}
+                            >
+
+                                <TeamPick team = { res['scores'][match['idEvent']]['pick'] } />
+
+                            </Badge>
+                        </TableCell>
+                    ))}
+
+                    </TableRow>
                 ))}
 
-            </TableRow>
-            </TableBody>
-            </Table>
-        </Box>
-        </PerfectScrollbar>
+                <TableRow key="Totals" hover>
+
+                    <TableCell key="TotalLabel">
+                        Totals:
+                    </TableCell>
+
+                    {results.map((res) => (
+                        <TableCell key={res['pid']} align="center">
+                            { res['total'] }
+                        </TableCell>
+                    ))}
+
+                </TableRow>
+                </TableBody>
+                </Table>
+            </Box>
         </Card>
     );
 };

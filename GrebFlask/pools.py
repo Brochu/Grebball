@@ -38,6 +38,7 @@ def CreateWeekData(season, week):
     return {
         'pooldata': poolinfo,
         'poolernames': { str(p['_id']):p['name'] for p in poolers },
+        'weekdata': { 'season': season, 'week': week },
         'matches': matchdata,
         'results': weekresults,
     }

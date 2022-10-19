@@ -29,6 +29,7 @@ export const PoolListResults = ({ season = 9999, week = 99 }) => {
     useEffect(() => {
         let setup = true;
 
+        //TODO: Fix this to use single page, like the fix for picks page
         if (season === 9999) {
             fetch(`http://localhost:5000/pools`)
                 .then( res => res.json() )

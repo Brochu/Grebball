@@ -5,6 +5,7 @@ import {
     Box,
     Card,
     CardHeader,
+    Container,
     Table,
     TableBody,
     TableCell,
@@ -15,12 +16,13 @@ import {
 } from '@mui/material';
 
 import { PoolMatchEntry } from './pool-match-entry';
+import { WeekPicker } from '../week-picker'
 import { TeamLogo } from '../team-logo'
 import { TeamPick } from '../team-pick'
 
 import { GetWeekLongName } from '../../utils/football'
 
-export const PoolListResults = ({ season = 9999, week = 99 }) => {
+export const PoolListResults = () => {
     const [matches, setMatches] = useState([]);
     const [results, setResults] = useState([]);
     const [poolers, setPoolers] = useState({});
@@ -29,33 +31,30 @@ export const PoolListResults = ({ season = 9999, week = 99 }) => {
     useEffect(() => {
         let setup = true;
 
-        //TODO: Fix this to use single page, like the fix for picks page
-        if (season === 9999) {
-            fetch(`http://localhost:5000/pools`)
-                .then( res => res.json() )
-                .then( data => {
-                    if (setup) {
-                        setMatches(data['matches']);
-                        setResults(data['results']);
-                        setPoolers(data['poolernames']);
-                        setWeekdata(data['weekdata']);
-                    }
-                });
-        } else {
-            fetch(`http://localhost:5000/pools/${season}/${week}`)
-                .then( res => res.json() )
-                .then( data => {
-                    if (setup) {
-                        setMatches(data['matches']);
-                        setResults(data['results']);
-                        setPoolers(data['poolernames']);
-                        setWeekdata(data['weekdata']);
-                    }
-                });
-        }
+        fetch(`http://localhost:5000/pools`)
+            .then( res => res.json() )
+            .then( data => {
+                if (setup) {
+                    setMatches(data['matches']);
+                    setResults(data['results']);
+                    setPoolers(data['poolernames']);
+                    setWeekdata(data['weekdata']);
+                }
+            });
 
         return () => setup = false;
     }, []);
+
+    const handleWeekChange = (pickedseason, pickedweek) => {
+        fetch(`http://localhost:5000/pools/${pickedseason}/${pickedweek}`)
+            .then( res => res.json() )
+            .then( data => {
+                setMatches(data['matches']);
+                setResults(data['results']);
+                setPoolers(data['poolernames']);
+                setWeekdata(data['weekdata']);
+            });
+    }
 
     const GetCardHeaderTitle = (weekdata) => {
         if (weekdata['season'] && weekdata['week']) {
@@ -73,10 +72,16 @@ export const PoolListResults = ({ season = 9999, week = 99 }) => {
     }
 
     return (
-        <Card>
-            <CardHeader title={ GetCardHeaderTitle(weekdata) } />
+        <>
+        <Container maxWidth="m">
+            <WeekPicker season={ weekdata['season'] } maxweek={ 0 } weekSelected={ handleWeekChange } />
+        </Container>
 
-            <Box>
+        <Container maxWidth="sm">
+        <Box sx={{ mt: 3 }}>
+            <Card>
+                <CardHeader title={ GetCardHeaderTitle(weekdata) } />
+
                 <Table size="small">
                 <TableHead>
                 <TableRow key="Header">
@@ -140,7 +145,9 @@ export const PoolListResults = ({ season = 9999, week = 99 }) => {
                 </TableRow>
                 </TableBody>
                 </Table>
-            </Box>
-        </Card>
+            </Card>
+        </Box>
+        </Container>
+        </>
     );
 };

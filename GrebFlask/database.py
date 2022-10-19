@@ -61,5 +61,29 @@ def FindPoolPicksForWeek(season, week, poolers, matchids):
 
     return dict(zip(poolerids, picks))
 
+def FindPoolPicksForSeason(season, poolers):
+    picks = []
+
+    for w in range(1, 23):
+        incomplete = False
+        picks.append({});
+
+        for p in poolers:
+            possiblepicks = list(DB.picks.find({
+                'pooler_id': p['_id'],
+                'season': season,
+                'week': w
+            }))
+
+            if len(possiblepicks) > 0:
+                picks[len(picks)-1][str(p['_id'])] = loads(possiblepicks[0]['pickstring'])
+            else:
+                incomplete = True
+
+        if incomplete:
+            break
+
+    return picks
+
 def InsertNewPicks(pickObj):
     DB.picks.insert_one(pickObj)

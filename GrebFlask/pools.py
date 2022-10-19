@@ -2,7 +2,7 @@ from bson import ObjectId
 from bson.json_util import loads
 from flask import Blueprint, session, render_template
 
-from database import DB, FindCurrentWeek, FindPoolInfoByPooler, FindPoolPicksForWeek
+from database import DB, FindCurrentWeek, FindPoolInfoByPooler, FindPoolPicksForWeek, FindPoolPicksForSeason
 from football import GetWeek, GetTeamShortName, GetWeekLongName
 
 PoolsBlueprint = Blueprint('pools_blueprint', __name__)
@@ -20,6 +20,11 @@ def get(strseason, strweek):
     season = int(strseason)
     week = int(strweek)
     return CreateWeekData(season, week)
+
+@PoolsBlueprint.route('/pools/<strseason>')
+def getSeason(strseason):
+    season = int(strseason)
+    return CreateSeasonData(season)
 
 def CreateWeekData(season, week):
     matchdata = GetWeek(season, week)
@@ -41,6 +46,22 @@ def CreateWeekData(season, week):
         'weekdata': { 'season': season, 'week': week },
         'matches': matchdata,
         'results': weekresults,
+    }
+
+def CreateSeasonData(season):
+    # pooler = loads(session['pooler'])
+    pooler = DB.poolers.find({ '_id': poolerid })[0]
+    (poolinfo, poolers) = FindPoolInfoByPooler(pooler)
+
+    seasonPicks = FindPoolPicksForSeason(season, poolers)
+    results = [ CalcPoolResults(GetWeek(season, w+1), picks, w+1) for w, picks in enumerate(seasonPicks) ]
+    totals = [ { res['pid'] : res['total'] for res in result } for w, result in enumerate(results) ]
+
+    return {
+        'pooldata': poolinfo,
+        'poolernames': { str(p['_id']):p['name'] for p in poolers },
+        'seasoninfo': season,
+        'totals': totals,
     }
 
 def CalcPoolResults(matches, poolpicks, week):

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import {
     Box,
     Button,
@@ -18,11 +19,7 @@ export const WeekPicker = ({ season, week, weekSelected }) => {
             <ButtonGroup size="small" variant="text" aria-label="text button group">
 
                 {weeks.map((w) => (
-                    <Button
-                        key={w}
-                        onClick={() => weekSelected(season, w)}
-                        disabled={w < week}
-                    >
+                    <Button key={ w } onClick={ () => weekSelected(season, w) }>
                         { GetWeekShortName(w) }
                     </Button>
                 ))}

@@ -41,15 +41,13 @@ export const MatchesPicker = () => {
     }, []);
 
     const handleWeekChange = (pickedseason, pickedweek) => {
-        console.log(`${pickedseason} : ${pickedweek}`);
-
-        //fetch(`http://localhost:5000/picks/new/${season}/${pickedweek}`)
-        //    .then( res => res.json() )
-        //    .then( data => {
-        //        if (setup) {
-        //            setWeekdata(data);
-        //        }
-        //    });
+        fetch(`http://localhost:5000/picks/new/${season}/${pickedweek}`)
+            .then( res => res.json() )
+            .then( data => {
+                setSeason(data.weekinfo.season);
+                setWeek(data.weekinfo.week);
+                setWeekdata(data.weekdata);
+            });
     }
 
     const handleChange = (event) => {

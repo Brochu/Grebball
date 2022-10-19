@@ -21,6 +21,7 @@ export const MatchesPicker = () => {
 
     const [season, setSeason] = useState(9999);
     const [week, setWeek] = useState(99);
+    const [maxweek, setMaxweek] = useState(99);
     const [weekdata, setWeekdata] = useState([]);
     const [picks, setPicks] = useState({});
 
@@ -33,6 +34,7 @@ export const MatchesPicker = () => {
                 if (setup) {
                     setSeason(data.weekinfo.season);
                     setWeek(data.weekinfo.week);
+                    setMaxweek(data.weekinfo.week);
                     setWeekdata(data.weekdata);
                 }
             });
@@ -89,7 +91,7 @@ export const MatchesPicker = () => {
     return (
         <>
         <Container maxWidth="m">
-            <WeekPicker season={season} week={week} weekSelected={handleWeekChange}/>
+            <WeekPicker season={season} maxweek={maxweek} weekSelected={handleWeekChange}/>
         </Container>
 
         <Container maxWidth="xs">

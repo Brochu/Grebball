@@ -16,14 +16,23 @@ poolerid = ObjectId('5f70f0ffd8e2db255c9a0df6')
 @PicksBlueprint.route('/picks')
 def newPicksIndex():
     [season, week] = FindCurrentWeek()
-    return { 'season': season, 'week': week }
+
+    weekinfo = {
+        'season': season,
+        'week': week+1
+    }
+    return { 'weekinfo': weekinfo, 'weekdata': GetWeek(weekinfo['season'], weekinfo['week']) }
 
 @PicksBlueprint.route('/picks/new/<strseason>/<strweek>')
 def newPicks(strseason, strweek):
     season = int(strseason)
     week = int(strweek)
 
-    return GetWeek(season, week)
+    weekinfo = {
+        'season': season,
+        'week': week
+    }
+    return { 'weekinfo': weekinfo, 'weekdata': GetWeek(season, week) }
 
 @PicksBlueprint.route('/picks/create', methods=['POST'])
 def create():

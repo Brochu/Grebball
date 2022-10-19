@@ -1,43 +1,56 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import {
-    Avatar,
     Box,
     Button,
     Card,
     CardContent,
     CardHeader,
+    Container,
     Divider,
     FormControlLabel,
     Radio,
     RadioGroup,
-    Skeleton,
-    useTheme,
 } from '@mui/material';
 import { TeamLogo } from '../team-logo'
-import { GetTeamShortName } from '../../utils/football'
+import { WeekPicker } from '../week-picker'
+import { GetTeamShortName, GetWeekLongName } from '../../utils/football'
 
 export const MatchesPicker = () => {
-    const theme = useTheme();
     const router = useRouter();
-    const q = router.query;
 
+    const [season, setSeason] = useState(9999);
+    const [week, setWeek] = useState(99);
     const [weekdata, setWeekdata] = useState([]);
     const [picks, setPicks] = useState({});
 
     useEffect(() => {
         let setup = true;
 
-        fetch(`http://localhost:5000/picks/new/${q.season}/${q.week}`)
+        fetch(`http://localhost:5000/picks`)
             .then( res => res.json() )
             .then( data => {
                 if (setup) {
-                    setWeekdata(data);
+                    setSeason(data.weekinfo.season);
+                    setWeek(data.weekinfo.week);
+                    setWeekdata(data.weekdata);
                 }
             });
 
         return () => setup = false;
     }, []);
+
+    const handleWeekChange = (pickedseason, pickedweek) => {
+        console.log(`${pickedseason} : ${pickedweek}`);
+
+        //fetch(`http://localhost:5000/picks/new/${season}/${pickedweek}`)
+        //    .then( res => res.json() )
+        //    .then( data => {
+        //        if (setup) {
+        //            setWeekdata(data);
+        //        }
+        //    });
+    }
 
     const handleChange = (event) => {
         var t = event.target;
@@ -54,8 +67,8 @@ export const MatchesPicker = () => {
         }
 
         payload['matchids'] = JSON.stringify(matchIds);
-        payload['season'] = q.season;
-        payload['week'] = q.week;
+        payload['season'] = season;
+        payload['week'] = week;
         //TODO: Find a way to store the current logged in user id to use here
         payload['pooler_id'] = '5f70f0ffd8e2db255c9a0df6';
 
@@ -76,35 +89,42 @@ export const MatchesPicker = () => {
     }
 
     return (
+        <>
+        <Container maxWidth="m">
+            <WeekPicker season={season} week={week} weekSelected={handleWeekChange}/>
+        </Container>
+
+        <Container maxWidth="xs">
         <Card>
-        <CardHeader title={ `Create picks for Week ${q.week}` } />
+            <CardHeader title={ `Nouveaux choix pour : ${ GetWeekLongName(week) }` } />
 
-        <Divider />
+            <Divider />
 
-        <CardContent>
-            { weekdata.map((match) => (
-                <Box key={`'${match.idEvent}'`} sx={{ display: "flex", justifyContent: "center" }}>
+            <CardContent>
+                { weekdata.map((match) => (
+                    <Box key={`'${match.idEvent}'`} sx={{ display: "flex", justifyContent: "center" }}>
 
-                    <TeamLogo team = { match.strAwayTeam } />
-                    <RadioGroup row={true} name={`${match.idEvent}`} value={picks[match.idEvent]} onChange={handleChange}>
-                        <FormControlLabel
-                            value={GetTeamShortName(match.strAwayTeam)}
-                            control={<Radio />}
-                        />
-                        <FormControlLabel
-                            value={GetTeamShortName(match.strHomeTeam)}
-                            control={<Radio />}
-                        />
-                    </RadioGroup>
-                    <TeamLogo team = { match.strHomeTeam } />
+                        <TeamLogo team = { match.strAwayTeam } />
+                        <RadioGroup row={true} name={`${match.idEvent}`} value={picks[match.idEvent]} onChange={handleChange}>
+                            <FormControlLabel
+                                value={GetTeamShortName(match.strAwayTeam)}
+                                control={<Radio />}
+                            />
+                            <FormControlLabel
+                                value={GetTeamShortName(match.strHomeTeam)}
+                                control={<Radio />}
+                            />
+                        </RadioGroup>
+                        <TeamLogo team = { match.strHomeTeam } />
 
-                </Box>
-            ))}
-        </CardContent>
+                    </Box>
+                ))}
+            </CardContent>
 
-        <Divider />
-        <Button onClick={handleSubmitPicks}>Submit</Button>
-
+            <Divider />
+            <Button onClick={handleSubmitPicks}>Submit</Button>
         </Card>
+        </Container>
+        </>
     );
 };

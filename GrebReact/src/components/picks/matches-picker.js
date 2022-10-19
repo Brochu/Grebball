@@ -95,6 +95,7 @@ export const MatchesPicker = () => {
         </Container>
 
         <Container maxWidth="xs">
+        <Box sx={{ mt: 3 }}>
         <Card>
             <CardHeader title={ `Nouveaux choix pour : ${ GetWeekLongName(week) }` } />
 
@@ -124,6 +125,7 @@ export const MatchesPicker = () => {
             <Divider />
             <Button onClick={handleSubmitPicks}>Submit</Button>
         </Card>
+        </Box>
         </Container>
         </>
     );

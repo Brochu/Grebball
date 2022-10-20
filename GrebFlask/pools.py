@@ -56,12 +56,18 @@ def CreateSeasonData(season):
     seasonPicks = FindPoolPicksForSeason(season, poolers)
     results = [ CalcPoolResults(GetWeek(season, w+1), picks, w+1) for w, picks in enumerate(seasonPicks) ]
     totals = [ { res['pid'] : res['total'] for res in result } for w, result in enumerate(results) ]
+    fulltotals = { str(pooler['_id']) : 0 for pooler in poolers }
+
+    for t in totals:
+        for pid, score in t.items():
+            fulltotals[pid] = fulltotals[pid] + score
 
     return {
         'pooldata': poolinfo,
         'poolernames': { str(p['_id']):p['name'] for p in poolers },
         'seasoninfo': season,
         'totals': totals,
+        'fulltotals': fulltotals,
     }
 
 def CalcPoolResults(matches, poolpicks, week):

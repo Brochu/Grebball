@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import {
-    Avatar,
     Badge,
     Box,
     Card,
@@ -11,13 +10,10 @@ import {
     TableCell,
     TableHead,
     TableRow,
-    Typography,
-    Tooltip,
 } from '@mui/material';
 
 import { PoolMatchEntry } from './pool-match-entry';
 import { WeekPicker } from '../week-picker'
-import { TeamLogo } from '../team-logo'
 import { TeamPick } from '../team-pick'
 
 import { GetWeekLongName } from '../../utils/football'

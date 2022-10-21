@@ -61,42 +61,22 @@ export const PoolListResults = () => {
     }
 
     const GetCardHeaderTitle = (weekdata) => {
-        if (weekdata['season'] && weekdata['week']) {
-            return `${weekdata['season']} - ${GetWeekLongName(weekdata['week'])}`
+        if (showseason) {
+            if (weekdata['season'] && weekdata['week']) {
+                return `Saison ${weekdata['season']}`;
+            }
+        } else {
+            if (weekdata['season'] && weekdata['week']) {
+                return `${weekdata['season']} - ${GetWeekLongName(weekdata['week'])}`;
+            }
         }
 
         return '';
     }
 
-    const GetScoreColor = (score) => {
-        if (score === 0) return 'red';
-        else if (score === 1) return 'gray';
-        else if (score === 2) return 'green';
-        else return 'blue';
-    }
-
-    return (
-        <>
-        <Container maxWidth="m">
-            <WeekPicker season={ weekdata['season'] } maxweek={ 0 } weekSelected={ handleWeekChange } />
-        </Container>
-
-        <Container maxWidth="sm">
-        <Box sx={{ mt: 3 }}>
-            <FormControlLabel
-                control={<Switch />}
-                label="Total de la saison"
-                checked={showseason}
-                onChange={handleToggleShowSeason}
-            />
-        </Box>
-        </Container>
-
-        <Container maxWidth="sm">
-        <Box sx={{ mt: 3 }}>
-            <Card>
-                <CardHeader title={ GetCardHeaderTitle(weekdata) } />
-
+    const GetResultsTable = () => {
+        if (!showseason) {
+            return (
                 <Table size="small">
                 <TableHead>
                 <TableRow key="Header">
@@ -160,6 +140,48 @@ export const PoolListResults = () => {
                 </TableRow>
                 </TableBody>
                 </Table>
+            );
+        } else {
+            return (
+                <>
+                    SEASON RESULTS
+                </>
+            );
+        }
+
+        return '';
+    }
+
+    const GetScoreColor = (score) => {
+        if (score === 0) return 'red';
+        else if (score === 1) return 'gray';
+        else if (score === 2) return 'green';
+        else return 'blue';
+    }
+
+    return (
+        <>
+        <Container maxWidth="m">
+            <WeekPicker season={ weekdata['season'] } maxweek={ 0 } weekSelected={ handleWeekChange } />
+        </Container>
+
+        <Container maxWidth="sm">
+        <Box sx={{ mt: 3 }}>
+            <FormControlLabel
+                control={<Switch />}
+                label="Total de la saison"
+                checked={showseason}
+                onChange={handleToggleShowSeason}
+            />
+        </Box>
+        </Container>
+
+        <Container maxWidth="sm">
+        <Box sx={{ mt: 3 }}>
+            <Card>
+                <CardHeader title={ GetCardHeaderTitle(weekdata) } />
+
+                { GetResultsTable() }
             </Card>
         </Box>
         </Container>

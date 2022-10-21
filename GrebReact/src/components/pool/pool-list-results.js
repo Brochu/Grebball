@@ -5,6 +5,8 @@ import {
     Card,
     CardHeader,
     Container,
+    FormControlLabel,
+    Switch,
     Table,
     TableBody,
     TableCell,
@@ -19,6 +21,7 @@ import { TeamPick } from '../team-pick'
 import { GetWeekLongName } from '../../utils/football'
 
 export const PoolListResults = () => {
+    const [showseason, setShowseason] = useState(false);
     const [matches, setMatches] = useState([]);
     const [results, setResults] = useState([]);
     const [poolers, setPoolers] = useState({});
@@ -52,6 +55,11 @@ export const PoolListResults = () => {
             });
     }
 
+    const handleToggleShowSeason = (event, newvalue) => {
+        // Need to fetch totals
+        setShowseason(newvalue);
+    }
+
     const GetCardHeaderTitle = (weekdata) => {
         if (weekdata['season'] && weekdata['week']) {
             return `${weekdata['season']} - ${GetWeekLongName(weekdata['week'])}`
@@ -71,6 +79,17 @@ export const PoolListResults = () => {
         <>
         <Container maxWidth="m">
             <WeekPicker season={ weekdata['season'] } maxweek={ 0 } weekSelected={ handleWeekChange } />
+        </Container>
+
+        <Container maxWidth="sm">
+        <Box sx={{ mt: 3 }}>
+            <FormControlLabel
+                control={<Switch />}
+                label="Total de la saison"
+                checked={showseason}
+                onChange={handleToggleShowSeason}
+            />
+        </Box>
         </Container>
 
         <Container maxWidth="sm">

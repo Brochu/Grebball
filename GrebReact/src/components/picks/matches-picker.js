@@ -34,7 +34,7 @@ export const MatchesPicker = () => {
                 if (setup) {
                     setSeason(data.weekinfo.season);
                     setWeek(data.weekinfo.week);
-                    setMaxweek(data.weekinfo.week);
+                    setMaxweek(data.weekinfo.week-1);
                     setWeekdata(data.weekdata);
                 }
             });

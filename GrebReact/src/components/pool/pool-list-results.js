@@ -22,10 +22,14 @@ import { GetWeekLongName } from '../../utils/football'
 
 export const PoolListResults = () => {
     const [showseason, setShowseason] = useState(false);
+
     const [matches, setMatches] = useState([]);
     const [results, setResults] = useState([]);
     const [poolers, setPoolers] = useState({});
     const [weekdata, setWeekdata] = useState({});
+
+    const [totals, setTotals] = useState([]);
+    const [seasontotal, setSeasontotal] = useState({});
 
     useEffect(() => {
         let setup = true;
@@ -56,7 +60,15 @@ export const PoolListResults = () => {
     }
 
     const handleToggleShowSeason = (event, newvalue) => {
-        // Need to fetch totals
+        if (newvalue) {
+            fetch(`http://localhost:5000/pools/${weekdata['season']}`)
+                .then( res => res.json() )
+                .then( data => {
+                    setTotals(data.totals)
+                    setSeasontotal(data.fulltotals);
+                });
+        }
+
         setShowseason(newvalue);
     }
 
@@ -79,19 +91,17 @@ export const PoolListResults = () => {
             return (
                 <Table size="small">
                 <TableHead>
-                <TableRow key="Header">
-
-                    <TableCell key="MatchLabel">
-                    Match
-                    </TableCell>
-
-                    {results.map((res) => (
-                        <TableCell key={res['pid']} align="center">
-                            { poolers[res['pid']] }
+                    <TableRow key="Header">
+                        <TableCell key="MatchLabel">
+                        Match
                         </TableCell>
-                    ))}
 
-                </TableRow>
+                        {results.map((res) => (
+                            <TableCell key={res['pid']} align="center">
+                                { poolers[res['pid']] }
+                            </TableCell>
+                        ))}
+                    </TableRow>
                 </TableHead>
 
                 <TableBody>
@@ -143,9 +153,53 @@ export const PoolListResults = () => {
             );
         } else {
             return (
-                <>
-                    SEASON RESULTS
-                </>
+                <Table size="small">
+                <TableHead>
+                    <TableRow key="HeaderTotals">
+                        <TableCell key="WeekLabel">
+                        Semaine
+                        </TableCell>
+
+                        {results.map((res) => (
+                            <TableCell key={`${res['pid']}-totals`} align="center">
+                                { poolers[res['pid']] }
+                            </TableCell>
+                        ))}
+                    </TableRow>
+                </TableHead>
+
+                <TableBody>
+                {totals.map((total, i) => (
+                    <TableRow key={i} hover>
+
+                    <TableCell key="WeekEntry">
+                        { GetWeekLongName(i+1) }
+                    </TableCell>
+
+                    {results.map((res) => (
+                        <TableCell key={`${res['pid']}-weektotals]`} align="center">
+                            { total[res['pid']] }
+                        </TableCell>
+                    ))}
+
+                    </TableRow>
+                ))}
+
+                <TableRow key="Totals" hover>
+
+                    <TableCell key="TotalLabel">
+                        Totals:
+                    </TableCell>
+
+                    {results.map((res) => (
+                        <TableCell key={`${res['pid']}-fulltotal]`} align="center">
+                            { seasontotal[res['pid']] }
+                        </TableCell>
+                    ))}
+
+                </TableRow>
+                </TableBody>
+                </Table>
             );
         }
 

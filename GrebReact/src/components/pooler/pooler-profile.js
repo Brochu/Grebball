@@ -6,7 +6,6 @@ import {
     Typography
 } from '@mui/material';
 import { poolers } from '../../__mocks__/poolers'
-import { TeamLogo } from '../team-logo'
 
 export const PoolerProfile = (props) => {
     const pooler = poolers[0];

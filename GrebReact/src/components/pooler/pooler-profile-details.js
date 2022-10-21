@@ -15,8 +15,8 @@ import { poolers } from '../../__mocks__/poolers'
 export const PoolerProfileDetails = (props) => {
     const pooler = poolers[0];
     const [values, setValues] = useState({
-        name: 'Katarina',
-        favTeam: 'Smith',
+        name: 'Alex',
+        favTeam: 'GB',
     });
 
     const handleChange = (event) => {

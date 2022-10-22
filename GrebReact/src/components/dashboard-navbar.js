@@ -1,9 +1,12 @@
 import { useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { AppBar, Avatar, Box, IconButton, Toolbar } from '@mui/material';
+
+import PropTypes from 'prop-types';
 import MenuIcon from '@mui/icons-material/Menu';
-import { UserCircle as UserCircleIcon } from '../icons/user-circle';
+
+import { AppBar, Box, Button, IconButton, Toolbar } from '@mui/material';
+import { useSession, signIn, signOut } from 'next-auth/react';
+
 import { AccountPopover } from './account-popover';
 
 const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
@@ -15,6 +18,17 @@ export const DashboardNavbar = (props) => {
     const { onSidebarOpen, ...other } = props;
     const settingsRef = useRef(null);
     const [openAccountPopover, setOpenAccountPopover] = useState(false);
+    
+    const handleSignIn = (e) => {
+        e.preventDefault();
+        signIn('google', null, {prompt: "select_account"});
+    }
+
+    const handleSignOut = (e) => {
+        e.preventDefault();
+        signOut();
+    }
+    const { data: session } = useSession();
 
     return (
         <>
@@ -43,19 +57,8 @@ export const DashboardNavbar = (props) => {
                 </IconButton>
 
                 <Box sx={{ flexGrow: 1 }} />
-                <Avatar
-                    onClick={() => setOpenAccountPopover(true)}
-                    ref={settingsRef}
-                    sx={{
-                        cursor: 'pointer',
-                            height: 40,
-                            width: 40,
-                            ml: 1
-                    }}
-                    src="/static/images/avatars/avatar_1.png"
-                >
-                    <UserCircleIcon fontSize="small" />
-                </Avatar>
+                { session && <a href="#" onClick={handleSignOut} className="btn-signin"> Sign Out </a> }
+                { !session && <a href="#" onClick={handleSignIn} className="btn-signin"> Sign In </a> }
             </Toolbar>
         </DashboardNavbarRoot>
         <AccountPopover

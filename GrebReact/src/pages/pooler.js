@@ -1,10 +1,19 @@
 import Head from 'next/head';
+import { useSession } from 'next-auth/react'
 import { Box, Container, Grid, Typography } from '@mui/material';
+
 import { DashboardLayout } from '../components/dashboard-layout';
 import { PoolerProfile } from '../components/pooler/pooler-profile';
 import { PoolerProfileDetails } from '../components/pooler/pooler-profile-details';
 
-const Page = () => (
+const Page = () => {
+    const { data: session } = useSession();
+
+    if (session) {
+        console.log(session.user);
+    }
+
+    return (
     <>
     <Head>
         <title>
@@ -37,7 +46,7 @@ const Page = () => (
     </Container>
     </Box>
     </>
-);
+)};
 
 Page.getLayout = (page) => (
     <DashboardLayout>

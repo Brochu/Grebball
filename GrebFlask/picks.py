@@ -5,8 +5,6 @@ from flask import Blueprint, session, request
 from database import FindCurrentWeek, InsertNewPicks
 from football import GetWeek
 
-from pprint import pprint
-
 PicksBlueprint = Blueprint('picks_blueprint', __name__)
 
 MAX_WEEK = 22

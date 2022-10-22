@@ -202,8 +202,6 @@ export const PoolListResults = () => {
                 </Table>
             );
         }
-
-        return '';
     }
 
     const GetScoreColor = (score) => {

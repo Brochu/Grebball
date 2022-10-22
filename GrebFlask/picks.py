@@ -1,6 +1,6 @@
 from bson.json_util import loads, dumps
 from bson import ObjectId
-from flask import Blueprint, session, request
+from flask import Blueprint, request
 
 from database import FindCurrentWeek, InsertNewPicks
 from football import GetWeek
@@ -8,8 +8,6 @@ from football import GetWeek
 PicksBlueprint = Blueprint('picks_blueprint', __name__)
 
 MAX_WEEK = 22
-#TODO: Remove test user
-poolerid = ObjectId('5f70f0ffd8e2db255c9a0df6')
 
 @PicksBlueprint.route('/picks')
 def newPicksIndex():
@@ -43,6 +41,7 @@ def create():
     pickObj = {
         'season': int(payload['season']),
         'week': int(payload['week']),
+        #TODO: Get the player id from the logged in pooler map
         'pooler_id': ObjectId(payload['pooler_id']),
         'pickstring': dumps(picks),
     }

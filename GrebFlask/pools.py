@@ -1,9 +1,8 @@
 from bson import ObjectId
-from bson.json_util import loads
-from flask import Blueprint, session, render_template
+from flask import Blueprint
 
 from database import DB, FindCurrentWeek, FindPoolInfoByPooler, FindPoolPicksForWeek, FindPoolPicksForSeason
-from football import GetWeek, GetTeamShortName, GetWeekLongName
+from football import GetWeek, GetTeamShortName
 
 PoolsBlueprint = Blueprint('pools_blueprint', __name__)
 
@@ -30,7 +29,7 @@ def CreateWeekData(season, week):
     matchdata = GetWeek(season, week)
     matchids = [m['idEvent'] for m in matchdata]
 
-    # pooler = loads(session['pooler'])
+    #TODO: Get the pooler id from the logged in pooler map
     pooler = DB.poolers.find({ '_id': poolerid })[0]
     (poolinfo, poolers) = FindPoolInfoByPooler(pooler)
 
@@ -49,7 +48,7 @@ def CreateWeekData(season, week):
     }
 
 def CreateSeasonData(season):
-    # pooler = loads(session['pooler'])
+    #TODO: Get the pooler id from the logged in pooler map
     pooler = DB.poolers.find({ '_id': poolerid })[0]
     (poolinfo, poolers) = FindPoolInfoByPooler(pooler)
 

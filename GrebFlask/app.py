@@ -1,10 +1,10 @@
 import os
 
+from flask import Flask, render_template, url_for, redirect
 from dotenv import load_dotenv
-from flask import Flask, render_template, url_for, session, redirect
 from flask_cors import CORS
+
 from authlib.integrations.flask_client import OAuth
-from bson.json_util import dumps
 
 from database import DB
 from pools import PoolsBlueprint
@@ -24,7 +24,6 @@ oauth = OAuth(app)
 # Auth Routes
 @app.route('/')
 def index():
-    #TODO: Add check if session already has the email stored
     return render_template('login.html')
 
 @app.route('/auth/google')
@@ -51,12 +50,10 @@ def GoogleOAuthCallback():
     user = oauth.google.parse_id_token(token, nonce=None)
 
     loggeduser = DB.users.find({ 'email': user['email'] })[0]
-    session['pooler'] = dumps(DB.poolers.find({ 'user_id': loggeduser['_id'] })[0])
     return redirect('/pools', 302)
 
 @app.route('/auth/goodbye')
 def goodbye():
-    session.clear()
     return redirect('/', 302)
 
 if __name__ == '__main__':

@@ -10,10 +10,8 @@ import {
     TextField
 } from '@mui/material';
 import { Teams, GetTeamShortName } from '../../utils/football'
-import { poolers } from '../../__mocks__/poolers'
 
-export const PoolerProfileDetails = (props) => {
-    const pooler = poolers[0];
+export const PoolerProfileDetails = ({ name, favTeam }) => {
     const [values, setValues] = useState({
         name: 'Alex',
         favTeam: 'GB',
@@ -27,7 +25,7 @@ export const PoolerProfileDetails = (props) => {
     };
 
     return (
-        <form autoComplete="off" noValidate {...props}>
+        <form autoComplete="off" noValidate>
         <Card>
             <CardHeader subheader="The information can be edited" title="Pooler Profile" />
 
@@ -39,24 +37,22 @@ export const PoolerProfileDetails = (props) => {
                 <TextField
                     fullWidth
                     helperText="Please specify pooler name"
-                    label="Pooler Name"
+                    label="New Pooler Name"
                     name="name"
                     onChange={handleChange}
                     required
-                    value={pooler.name}
                     variant="outlined"
                 />
             </Grid>
             <Grid item md={6} xs={12}>
                 <TextField
                     fullWidth
-                    label="Select Favorite Team"
+                    label="Select New Favorite Team"
                     name="favTeam"
                     onChange={handleChange}
                     required
                     select
                     SelectProps={{ native: true }}
-                    value={pooler.favTeam}
                     variant="outlined"
                 >
                     {Teams.map((team) => (

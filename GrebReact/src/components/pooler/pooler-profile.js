@@ -5,13 +5,10 @@ import {
     CardContent,
     Typography
 } from '@mui/material';
-import { poolers } from '../../__mocks__/poolers'
 
-export const PoolerProfile = (props) => {
-    const pooler = poolers[0];
-
+export const PoolerProfile = ({ pooler }) => {
     return (
-        <Card {...props}>
+        <Card>
             <CardContent>
                 <Box
                     sx={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>

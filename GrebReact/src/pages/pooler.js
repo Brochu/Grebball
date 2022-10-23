@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react'
+import { useSession, getSession } from 'next-auth/react'
+
 import Head from 'next/head';
-import { useSession } from 'next-auth/react'
 import { Box, Container, Grid, Typography } from '@mui/material';
 
 import { DashboardLayout } from '../components/dashboard-layout';
@@ -8,10 +10,26 @@ import { PoolerProfileDetails } from '../components/pooler/pooler-profile-detail
 
 const Page = () => {
     const { data: session } = useSession();
+    const [pooler, setPooler] = useState({});
 
-    if (session) {
-        console.log(session.user);
-    }
+    useEffect(() => {
+        let setup = true;
+
+        getSession()
+            .then(session => {
+                if (setup && session) {
+                    fetch(`http://localhost:5000/pooler`, {headers: { 'pooler-email': session.user.email }})
+                        .then( res => res.json() )
+                        .then( data => {
+                            if (setup) {
+                                setPooler(data);
+                            }
+                        });
+                }
+            });
+
+        return () => setup = false;
+    }, []);
 
     return (
     <>
@@ -32,17 +50,20 @@ const Page = () => {
         Pooler
     </Typography>
 
-    <Grid container spacing={3}>
+    { session &&
+        <Grid container spacing={3}>
 
-        <Grid item lg={4} md={6} xs={12}>
-            <PoolerProfile />
+            <Grid item lg={4} md={6} xs={12}>
+                <PoolerProfile pooler={ pooler } />
+            </Grid>
+
+            <Grid item lg={8} md={6} xs={12}>
+                <PoolerProfileDetails name={ pooler.name } favTeam={ pooler.favTeam } />
+            </Grid>
+
         </Grid>
+    }
 
-        <Grid item lg={8} md={6} xs={12}>
-            <PoolerProfileDetails />
-        </Grid>
-
-    </Grid>
     </Container>
     </Box>
     </>

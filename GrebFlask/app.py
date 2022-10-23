@@ -9,6 +9,7 @@ from authlib.integrations.flask_client import OAuth
 from database import DB
 from pools import PoolsBlueprint
 from picks import PicksBlueprint
+from pooler import PoolerBlueprint
 
 app = Flask(__name__)
 CORS(app)
@@ -18,6 +19,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 # Register different controllers
 app.register_blueprint(PoolsBlueprint)
 app.register_blueprint(PicksBlueprint)
+app.register_blueprint(PoolerBlueprint)
 
 oauth = OAuth(app)
 

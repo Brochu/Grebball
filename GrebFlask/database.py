@@ -1,9 +1,13 @@
 import os
 
-from bson.json_util import loads
+from bson.json_util import loads, dumps
 from pymongo import MongoClient
 
 DB = MongoClient(os.environ.get('MONGO_URL'))[str(os.environ.get('MONGO_DB_NAME'))]
+
+def FindPoolerByEmail(email):
+    user = list(DB.users.find({ 'email': email }))[0]
+    return list(DB.poolers.find({ 'user_id': user['_id'] }))[0]
 
 def FindPoolInfoByPooler(pooler):
     pool = DB.pools.find({ '_id': pooler['pool_id'] })[0]

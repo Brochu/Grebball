@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSession, getSession } from 'next-auth/react';
 import {
     Badge,
     Box,
@@ -21,6 +22,7 @@ import { TeamPick } from '../team-pick'
 import { GetWeekLongName } from '../../utils/football'
 
 export const PoolListResults = () => {
+    const { data: session } = useSession();
     const [showseason, setShowseason] = useState(false);
 
     const [matches, setMatches] = useState([]);
@@ -34,39 +36,51 @@ export const PoolListResults = () => {
     useEffect(() => {
         let setup = true;
 
-        fetch(`http://localhost:5000/pools`)
-            .then( res => res.json() )
-            .then( data => {
-                if (setup) {
-                    setMatches(data['matches']);
-                    setResults(data['results']);
-                    setPoolers(data['poolernames']);
-                    setWeekdata(data['weekdata']);
+        getSession().then(session => {
+                if (setup && session) {
+                    fetch(`http://localhost:5000/pools`, { headers: { 'pooler-email': session.user.email } })
+                        .then( res => res.json() )
+                        .then( data => {
+                            if (setup) {
+                                setMatches(data['matches']);
+                                setResults(data['results']);
+                                setPoolers(data['poolernames']);
+                                setWeekdata(data['weekdata']);
+                            }
+                        });
                 }
-            });
+        });
 
         return () => setup = false;
     }, []);
 
     const handleWeekChange = (pickedseason, pickedweek) => {
-        fetch(`http://localhost:5000/pools/${pickedseason}/${pickedweek}`)
-            .then( res => res.json() )
-            .then( data => {
-                setMatches(data['matches']);
-                setResults(data['results']);
-                setPoolers(data['poolernames']);
-                setWeekdata(data['weekdata']);
-            });
+        getSession().then(session => {
+                fetch(`http://localhost:5000/pools/${pickedseason}/${pickedweek}`, {
+                    headers: { 'pooler-email': session.user.email }
+                })
+                    .then( res => res.json() )
+                    .then( data => {
+                        setMatches(data['matches']);
+                        setResults(data['results']);
+                        setPoolers(data['poolernames']);
+                        setWeekdata(data['weekdata']);
+                    });
+        });
     }
 
     const handleToggleShowSeason = (event, newvalue) => {
         if (newvalue) {
-            fetch(`http://localhost:5000/pools/${weekdata['season']}`)
-                .then( res => res.json() )
-                .then( data => {
-                    setTotals(data.totals)
-                    setSeasontotal(data.fulltotals);
-                });
+            getSession().then(session => {
+                fetch(`http://localhost:5000/pools/${weekdata['season']}`, {
+                    headers: { 'pooler-email': session.user.email }
+                })
+                    .then( res => res.json() )
+                    .then( data => {
+                        setTotals(data.totals)
+                        setSeasontotal(data.fulltotals);
+                    });
+            });
         }
 
         setShowseason(newvalue);
@@ -213,30 +227,34 @@ export const PoolListResults = () => {
 
     return (
         <>
-        <Container maxWidth="m">
-            <WeekPicker season={ weekdata['season'] } maxweek={ 0 } weekSelected={ handleWeekChange } />
-        </Container>
+        { session &&
+            <>
+            <Container maxWidth="m">
+                <WeekPicker season={ weekdata['season'] } maxweek={ 0 } weekSelected={ handleWeekChange } />
+            </Container>
 
-        <Container maxWidth="sm">
-        <Box sx={{ mt: 3 }}>
-            <FormControlLabel
-                control={<Switch />}
-                label="Total de la saison"
-                checked={showseason}
-                onChange={handleToggleShowSeason}
-            />
-        </Box>
-        </Container>
+            <Container maxWidth="sm">
+            <Box sx={{ mt: 3 }}>
+                <FormControlLabel
+                    control={<Switch />}
+                    label="Total de la saison"
+                    checked={showseason}
+                    onChange={handleToggleShowSeason}
+                />
+            </Box>
+            </Container>
 
-        <Container maxWidth="sm">
-        <Box sx={{ mt: 3 }}>
-            <Card>
-                <CardHeader title={ GetCardHeaderTitle(weekdata) } />
+            <Container maxWidth="sm">
+            <Box sx={{ mt: 3 }}>
+                <Card>
+                    <CardHeader title={ GetCardHeaderTitle(weekdata) } />
 
-                { GetResultsTable() }
-            </Card>
-        </Box>
-        </Container>
+                    { GetResultsTable() }
+                </Card>
+            </Box>
+            </Container>
+            </>
+        }
         </>
     );
 };

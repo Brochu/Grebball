@@ -1,36 +1,30 @@
-from bson import ObjectId
-from flask import Blueprint
+from flask import Blueprint, request
 
-from database import DB, FindCurrentWeek, FindPoolInfoByPooler, FindPoolPicksForWeek, FindPoolPicksForSeason
+from database import DB, FindCurrentWeek, FindPoolInfoByPooler, FindPoolPicksForWeek, FindPoolPicksForSeason, FindPoolerByEmail
 from football import GetWeek, GetTeamShortName
 
 PoolsBlueprint = Blueprint('pools_blueprint', __name__)
 
-#TODO: Remove test user
-poolerid = ObjectId('5f70f0ffd8e2db255c9a0df6')
-
 @PoolsBlueprint.route('/pools')
 def index():
     [season, week] = FindCurrentWeek()
-    return CreateWeekData(season, week)
+    return CreateWeekData(season, week, FindPoolerByEmail(request.headers['Pooler-Email']))
 
 @PoolsBlueprint.route('/pools/<strseason>/<strweek>')
 def get(strseason, strweek):
     season = int(strseason)
     week = int(strweek)
-    return CreateWeekData(season, week)
+    return CreateWeekData(season, week, FindPoolerByEmail(request.headers['Pooler-Email']))
 
 @PoolsBlueprint.route('/pools/<strseason>')
 def getSeason(strseason):
     season = int(strseason)
-    return CreateSeasonData(season)
+    return CreateSeasonData(season, FindPoolerByEmail(request.headers['Pooler-Email']))
 
-def CreateWeekData(season, week):
+def CreateWeekData(season, week, pooler):
     matchdata = GetWeek(season, week)
     matchids = [m['idEvent'] for m in matchdata]
 
-    #TODO: Get the pooler id from the logged in pooler map
-    pooler = DB.poolers.find({ '_id': poolerid })[0]
     (poolinfo, poolers) = FindPoolInfoByPooler(pooler)
 
     weekresults = CalcPoolResults(
@@ -47,9 +41,7 @@ def CreateWeekData(season, week):
         'results': weekresults,
     }
 
-def CreateSeasonData(season):
-    #TODO: Get the pooler id from the logged in pooler map
-    pooler = DB.poolers.find({ '_id': poolerid })[0]
+def CreateSeasonData(season, pooler):
     (poolinfo, poolers) = FindPoolInfoByPooler(pooler)
 
     seasonPicks = FindPoolPicksForSeason(season, poolers)

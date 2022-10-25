@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { Box, Container } from '@mui/material';
+import { Box } from '@mui/material';
 
 import { PoolListResults } from '../components/pool/pool-list-results';
 import { DashboardLayout } from '../components/dashboard-layout';

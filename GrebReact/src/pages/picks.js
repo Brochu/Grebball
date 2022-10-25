@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { Box, Container, Grid } from '@mui/material';
+import { Box } from '@mui/material';
 import { MatchesPicker } from '../components/picks/matches-picker';
 import { DashboardLayout } from '../components/dashboard-layout';
 

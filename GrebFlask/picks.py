@@ -2,7 +2,7 @@ from bson.json_util import loads, dumps
 from bson import ObjectId
 from flask import Blueprint, request
 
-from database import FindCurrentWeek, InsertNewPicks
+from database import FindCurrentWeek, FindPoolerByEmail, InsertNewPicks
 from football import GetWeek
 
 PicksBlueprint = Blueprint('picks_blueprint', __name__)
@@ -38,11 +38,12 @@ def create():
     for matchid in loads(payload['matchids']):
         picks[matchid] = payload[matchid] if matchid in payload else ''
 
+    pooler = FindPoolerByEmail(payload['pooler-email'])
     pickObj = {
         'season': int(payload['season']),
         'week': int(payload['week']),
         #TODO: Get the player id from the logged in pooler map
-        'pooler_id': ObjectId(payload['pooler_id']),
+        'pooler_id': pooler['_id'],
         'pickstring': dumps(picks),
     }
 

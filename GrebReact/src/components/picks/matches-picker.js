@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
 import {
     Box,
     Button,
@@ -12,18 +13,20 @@ import {
     Radio,
     RadioGroup,
 } from '@mui/material';
+
 import { TeamLogo } from '../team-logo'
 import { WeekPicker } from '../week-picker'
 import { GetTeamShortName, GetWeekLongName } from '../../utils/football'
 
 export const MatchesPicker = () => {
     const router = useRouter();
+    const { data: session } = useSession();
 
     const [season, setSeason] = useState(9999);
     const [week, setWeek] = useState(99);
     const [maxweek, setMaxweek] = useState(99);
     const [weekdata, setWeekdata] = useState([]);
-    const [picks, setPicks] = useState({});
+    let picks = {};
 
     useEffect(() => {
         let setup = true;
@@ -36,6 +39,7 @@ export const MatchesPicker = () => {
                     setWeek(data.weekinfo.week);
                     setMaxweek(data.weekinfo.week-1);
                     setWeekdata(data.weekdata);
+                    picks = {};
                 }
             });
 
@@ -43,12 +47,13 @@ export const MatchesPicker = () => {
     }, []);
 
     const handleWeekChange = (pickedseason, pickedweek) => {
-        fetch(`http://localhost:5000/picks/new/${season}/${pickedweek}`)
+        fetch(`http://localhost:5000/picks/new/${pickedseason}/${pickedweek}`)
             .then( res => res.json() )
             .then( data => {
                 setSeason(data.weekinfo.season);
                 setWeek(data.weekinfo.week);
                 setWeekdata(data.weekdata);
+                picks = {};
             });
     }
 
@@ -69,8 +74,7 @@ export const MatchesPicker = () => {
         payload['matchids'] = JSON.stringify(matchIds);
         payload['season'] = season;
         payload['week'] = week;
-        //TODO: Find a way to store the current logged in user id to use here
-        payload['pooler_id'] = '5f70f0ffd8e2db255c9a0df6';
+        payload['pooler-email'] = session.user.email;
 
         fetch(`http://localhost:5000/picks/create`, {
             method: 'post',
@@ -81,14 +85,18 @@ export const MatchesPicker = () => {
         })
             .then( res => res.json() )
             .then( data => {
-                console.log(data);
                 if (data.success) {
                     router.push('/');
                 }
             });
+
+        // Prevent double submit
+        event.target.disabled = true;
     }
 
     return (
+        <>
+        { session &&
         <>
         <Container maxWidth="m">
             <WeekPicker season={season} maxweek={maxweek} weekSelected={handleWeekChange}/>
@@ -127,6 +135,8 @@ export const MatchesPicker = () => {
         </Card>
         </Box>
         </Container>
+        </>
+        }
         </>
     );
 };

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/react'
+import { useSession, getSession } from 'next-auth/react'
 import {
     Box,
     Button,
@@ -31,17 +31,23 @@ export const MatchesPicker = () => {
     useEffect(() => {
         let setup = true;
 
-        fetch(`http://localhost:5000/picks`)
-            .then( res => res.json() )
-            .then( data => {
-                if (setup) {
-                    setSeason(data.weekinfo.season);
-                    setWeek(data.weekinfo.week);
-                    setMaxweek(data.weekinfo.week-1);
-                    setWeekdata(data.weekdata);
-                    picks = {};
-                }
-            });
+        getSession().then( session => {
+            if (setup && session) {
+                fetch(`http://localhost:5000/picks`, {
+                    headers: { 'pooler-email': session.user.email },
+                })
+                    .then( res => res.json() )
+                    .then( data => {
+                        if (setup) {
+                            setSeason(data.weekinfo.season);
+                            setWeek(data.weekinfo.week);
+                            setMaxweek(data.weekinfo.week);
+                            setWeekdata(data.weekdata);
+                            picks = {};
+                        }
+                    });
+            }
+        });
 
         return () => setup = false;
     }, []);

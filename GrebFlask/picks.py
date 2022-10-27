@@ -2,7 +2,7 @@ from bson.json_util import loads, dumps
 from bson import ObjectId
 from flask import Blueprint, request
 
-from database import FindCurrentWeek, FindPoolerByEmail, InsertNewPicks
+from database import FindCurrentWeekForPooler, FindPoolerByEmail, InsertNewPicks
 from football import GetWeek
 
 PicksBlueprint = Blueprint('picks_blueprint', __name__)
@@ -11,7 +11,7 @@ MAX_WEEK = 22
 
 @PicksBlueprint.route('/picks')
 def newPicksIndex():
-    [season, week] = FindCurrentWeek()
+    [season, week] = FindCurrentWeekForPooler(FindPoolerByEmail(request.headers['Pooler-Email']))
 
     weekinfo = {
         'season': season,

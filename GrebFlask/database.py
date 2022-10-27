@@ -46,6 +46,40 @@ def FindCurrentWeek():
 
     return maxseason, maxweek
 
+def FindCurrentWeekForPooler(pooler):
+    seasonPipeline = [
+        {
+            '$match': {
+                'pooler_id': pooler['_id'],
+            }
+        },
+        {
+            '$group': {
+                '_id': '$pooler_id',
+                'season_max': { '$max': '$season' },
+            }
+        }
+    ]
+    maxseason = list(DB.picks.aggregate(seasonPipeline))[0]['season_max']
+
+    weekPipeline = [
+        {
+            '$match': {
+                'pooler_id': pooler['_id'],
+                'season': maxseason,
+            }
+        },
+        {
+            '$group': {
+                '_id': '$pooler_id',
+                'week_max': { '$max': '$week' },
+            }
+        }
+    ]
+    maxweek = list(DB.picks.aggregate(weekPipeline))[0]['week_max']
+
+    return maxseason, maxweek
+
 def FindPoolPicksForWeek(season, week, poolers, matchids):
     poolerids = []
     picks = []

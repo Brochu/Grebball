@@ -1,6 +1,6 @@
 import os
+import json
 
-from bson.json_util import loads, dumps
 from pymongo import MongoClient
 
 DB = MongoClient(os.environ.get('MONGO_URL'))[str(os.environ.get('MONGO_DB_NAME'))]
@@ -93,7 +93,7 @@ def FindPoolPicksForWeek(season, week, poolers, matchids):
         }))
 
         if len(possiblepicks) > 0:
-            picks.append(loads(possiblepicks[0]['pickstring']))
+            picks.append(json.load(possiblepicks[0]['pickstring']))
         else:
             picks.append({ m:'na' for m in matchids })
 
@@ -114,7 +114,7 @@ def FindPoolPicksForSeason(season, poolers):
             }))
 
             if len(possiblepicks) > 0:
-                picks[len(picks)-1][str(p['_id'])] = loads(possiblepicks[0]['pickstring'])
+                picks[len(picks)-1][str(p['_id'])] = json.load(possiblepicks[0]['pickstring'])
             else:
                 incomplete = True
 

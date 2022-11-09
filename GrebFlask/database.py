@@ -93,7 +93,7 @@ def FindPoolPicksForWeek(season, week, poolers, matchids):
         }))
 
         if len(possiblepicks) > 0:
-            picks.append(json.load(possiblepicks[0]['pickstring']))
+            picks.append(json.loads(possiblepicks[0]['pickstring']))
         else:
             picks.append({ m:'na' for m in matchids })
 
@@ -114,7 +114,7 @@ def FindPoolPicksForSeason(season, poolers):
             }))
 
             if len(possiblepicks) > 0:
-                picks[len(picks)-1][str(p['_id'])] = json.load(possiblepicks[0]['pickstring'])
+                picks[len(picks)-1][str(p['_id'])] = json.loads(possiblepicks[0]['pickstring'])
             else:
                 incomplete = True
 

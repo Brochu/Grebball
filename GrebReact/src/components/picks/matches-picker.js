@@ -69,7 +69,7 @@ export const MatchesPicker = () => {
     };
 
     const handleSubmitPicks = (event) => {
-        let payload = picks;
+        let payload = JSON.parse(JSON.stringify(picks));
 
         //TODO: Find a better way to handle this?
         let matchIds = [];

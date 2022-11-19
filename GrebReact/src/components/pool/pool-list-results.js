@@ -19,6 +19,8 @@ import { PoolMatchEntry } from './pool-match-entry';
 import { WeekPicker } from '../week-picker'
 import { TeamPick } from '../team-pick'
 
+import { BACK_URI } from '../../lib/backend';
+
 import { GetWeekLongName } from '../../utils/football'
 
 export const PoolListResults = () => {
@@ -38,7 +40,7 @@ export const PoolListResults = () => {
 
         getSession().then(session => {
                 if (setup && session) {
-                    fetch(`http://localhost:5000/pools`, { headers: { 'pooler-email': session.user.email } })
+                    fetch(`${BACK_URI}/pools`, { headers: { 'pooler-email': session.user.email } })
                         .then( res => res.json() )
                         .then( data => {
                             if (setup) {
@@ -56,7 +58,7 @@ export const PoolListResults = () => {
 
     const handleWeekChange = (pickedseason, pickedweek) => {
         getSession().then(session => {
-                fetch(`http://localhost:5000/pools/${pickedseason}/${pickedweek}`, {
+                fetch(`${BACK_URI}/pools/${pickedseason}/${pickedweek}`, {
                     headers: { 'pooler-email': session.user.email }
                 })
                     .then( res => res.json() )
@@ -72,7 +74,7 @@ export const PoolListResults = () => {
     const handleToggleShowSeason = (event, newvalue) => {
         if (newvalue) {
             getSession().then(session => {
-                fetch(`http://localhost:5000/pools/${weekdata['season']}`, {
+                fetch(`${BACK_URI}/pools/${weekdata['season']}`, {
                     headers: { 'pooler-email': session.user.email }
                 })
                     .then( res => res.json() )

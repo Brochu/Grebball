@@ -14,6 +14,8 @@ import {
     RadioGroup,
 } from '@mui/material';
 
+import { BACK_URI } from '../../lib/backend';
+
 import { TeamLogo } from '../team-logo'
 import { WeekPicker } from '../week-picker'
 import { GetTeamShortName, GetWeekLongName } from '../../utils/football'
@@ -33,7 +35,7 @@ export const MatchesPicker = () => {
 
         getSession().then( session => {
             if (setup && session) {
-                fetch(`http://localhost:5000/picks`, {
+                fetch(`${BACK_URI}/picks`, {
                     headers: { 'pooler-email': session.user.email },
                 })
                     .then( res => res.json() )
@@ -53,7 +55,7 @@ export const MatchesPicker = () => {
     }, []);
 
     const handleWeekChange = (pickedseason, pickedweek) => {
-        fetch(`http://localhost:5000/picks/new/${pickedseason}/${pickedweek}`)
+        fetch(`{BACK_URI}/picks/new/${pickedseason}/${pickedweek}`)
             .then( res => res.json() )
             .then( data => {
                 setSeason(data.weekinfo.season);
@@ -82,7 +84,7 @@ export const MatchesPicker = () => {
         payload['week'] = week;
         payload['pooler-email'] = session.user.email;
 
-        fetch(`http://localhost:5000/picks/create`, {
+        fetch(`${BACK_URI}/picks/create`, {
             method: 'post',
             body: JSON.stringify(payload),
             headers: {

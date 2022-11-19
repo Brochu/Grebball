@@ -1,14 +1,12 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google"
 
-const options = {
+export default NextAuth({
     providers: [
         GoogleProvider({
+            secret: process.env.NEXTAUTH_SECRET,
             clientId: process.env.GOOGLE_ID,
             clientSecret: process.env.GOOGLE_SECRET,
         }),
     ],
-    NEXTAUTH_URL: 'http://localhost:3000/api/auth/signin',
-}
-
-export default (req, res) => NextAuth(req, res, options)
+});

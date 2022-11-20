@@ -1,1 +1,1 @@
-export const BACK_URI = "http://backend:5000";
+export const BACK_URI = "https://brocodev.duckdns.org:80";

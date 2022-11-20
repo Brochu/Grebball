@@ -1,1 +1,1 @@
-export const BACK_URI = "http://localhost:5000";
+export const BACK_URI = "http://backend:5000";

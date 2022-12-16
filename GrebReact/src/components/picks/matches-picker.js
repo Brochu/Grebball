@@ -28,7 +28,7 @@ export const MatchesPicker = () => {
     const [week, setWeek] = useState(99);
     const [maxweek, setMaxweek] = useState(99);
     const [weekdata, setWeekdata] = useState([]);
-    let picks = {};
+    const [picks, setPicks] = useState({});
 
     useEffect(() => {
         let setup = true;
@@ -45,7 +45,10 @@ export const MatchesPicker = () => {
                             setWeek(data.weekinfo.week);
                             setMaxweek(data.weekinfo.week);
                             setWeekdata(data.weekdata);
-                            picks = {};
+
+                            setPicks({});
+                            //picks[parseInt(data.favteaminfo.matchid)] = data.favteaminfo.favTeam;
+                            //console.log(picks);
                         }
                     });
             }
@@ -55,19 +58,20 @@ export const MatchesPicker = () => {
     }, []);
 
     const handleWeekChange = (pickedseason, pickedweek) => {
-        fetch(`{BACK_URI}/picks/new/${pickedseason}/${pickedweek}`)
+        fetch(`${BACK_URI}/picks/new/${pickedseason}/${pickedweek}`)
             .then( res => res.json() )
             .then( data => {
                 setSeason(data.weekinfo.season);
                 setWeek(data.weekinfo.week);
                 setWeekdata(data.weekdata);
-                picks = {};
+                setPicks({});
             });
     }
 
     const handleChange = (event) => {
         var t = event.target;
         picks[t.name] = t.value;
+        //console.log(picks);
     };
 
     const handleSubmitPicks = (event) => {

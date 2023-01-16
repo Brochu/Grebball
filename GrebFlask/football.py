@@ -80,7 +80,7 @@ def GetTeamLongName(shortname):
     return sNameMap[shortname]
 
 def GetWeek(season, week):
-    url = "https://www.thesportsdb.com/api/v1/json/2/eventsround.php"
+    url = "https://www.thesportsdb.com/api/v1/json/3/eventsround.php"
 
     # Gets the results for a given season and week
     # 01 - 18: Regular season

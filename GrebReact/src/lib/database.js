@@ -17,3 +17,14 @@ client = new MongoClient(uri, options);
 clientPromise = client.connect();
 
 export default clientPromise;
+
+export async function FindPoolerByEmail(e) {
+    const mongo = await clientPromise;
+    const db = mongo.db(process.env.MONGO_DB_NAME);
+
+    const users = await db.collection("users").find({ email: e }).toArray();
+    const uid = users[0]._id;
+
+    const poolers = await db.collection("poolers").find({ user_id: uid }).toArray();
+    return poolers[0];
+}

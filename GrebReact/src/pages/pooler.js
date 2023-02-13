@@ -4,8 +4,6 @@ import { useSession, getSession } from 'next-auth/react'
 import Head from 'next/head';
 import { Box, Container, Grid, Typography } from '@mui/material';
 
-import { BACK_URI } from '../lib/backend';
-
 import { DashboardLayout } from '../components/dashboard-layout';
 import { PoolerProfile } from '../components/pooler/pooler-profile';
 import { PoolerProfileDetails } from '../components/pooler/pooler-profile-details';
@@ -20,7 +18,7 @@ const Page = () => {
         getSession()
             .then(session => {
                 if (setup && session) {
-                    fetch(`${BACK_URI}/pooler`, {headers: { 'pooler-email': session.user.email }})
+                    fetch(`/api/pooler`, {headers: { 'pooler-email': session.user.email }})
                         .then( res => res.json() )
                         .then( data => {
                             if (setup) {

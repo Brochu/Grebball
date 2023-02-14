@@ -35,20 +35,21 @@ export const MatchesPicker = () => {
 
         getSession().then( session => {
             if (setup && session) {
-                fetch(`${BACK_URI}/picks`, {
+                fetch(`/api/picks`, {
                     headers: { 'pooler-email': session.user.email },
                 })
                     .then( res => res.json() )
                     .then( data => {
                         if (setup) {
+                            console.log(data);
+                            console.log(picks);
+
                             setSeason(data.weekinfo.season);
                             setWeek(data.weekinfo.week);
                             setMaxweek(data.weekinfo.week);
                             setWeekdata(data.weekdata);
 
                             setPicks({});
-                            //picks[parseInt(data.favteaminfo.matchid)] = data.favteaminfo.favTeam;
-                            //console.log(picks);
                         }
                     });
             }

@@ -42,7 +42,6 @@ export const MatchesPicker = () => {
                     .then( data => {
                         if (setup) {
                             console.log(data);
-                            console.log(picks);
 
                             setSeason(data.weekinfo.season);
                             setWeek(data.weekinfo.week);

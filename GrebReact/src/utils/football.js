@@ -102,3 +102,8 @@ export const GetWeekLongName = (weeknum) => {
     if (n == 22) return 'SuperBowl';
     else return `Semaine ${n.toString()}`;
 };
+
+export const GetWeek = (_season, _week) => {
+    console.log(process.env.FOOTBALL_API_URL);
+    return {};
+};

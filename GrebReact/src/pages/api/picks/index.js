@@ -1,4 +1,5 @@
 import { FindPoolerByEmail, FindCurrentWeekForPooler } from '../../../lib/database';
+import { GetWeek } from '../../../utils/football'
 
 export default async function handler(req, res) {
     const e = req.headers['pooler-email'];
@@ -7,8 +8,16 @@ export default async function handler(req, res) {
     let [season, week] = await FindCurrentWeekForPooler(pooler);
     console.log(`season = ${season}; week = ${week}`);
 
+    const weekinfo = {
+        'season': season,
+        'week': week,
+    };
+
+    const weekdata = GetWeek(season, week);
+    console.log(weekdata);
+
     res.status(200).json({
-        season: season,
-        week: week,
+        'weekinfo': weekinfo,
+        'weekdata': weekdata,
     });
 }

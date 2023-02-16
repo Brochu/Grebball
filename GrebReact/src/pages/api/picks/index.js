@@ -6,14 +6,14 @@ export default async function handler(req, res) {
     const pooler = await FindPoolerByEmail(e);
 
     let [season, week] = await FindCurrentWeekForPooler(pooler);
-    console.log(`season = ${season}; week = ${week}`);
-
     const weekinfo = {
         'season': season,
         'week': week,
     };
 
-    const weekdata = GetWeek(season, week);
+    const weekdata = await GetWeek(season, week);
+
+    console.log(weekinfo);
     console.log(weekdata);
 
     res.status(200).json({

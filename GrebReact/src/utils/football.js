@@ -103,7 +103,24 @@ export const GetWeekLongName = (weeknum) => {
     else return `Semaine ${n.toString()}`;
 };
 
-export const GetWeek = (_season, _week) => {
-    console.log(process.env.FOOTBALL_API_URL);
-    return {};
+export async function GetWeek(season, week) {
+    let realweek = week;
+    if (week === 19) {
+        realweek = 160;
+    }
+    else if (week === 20) {
+        realweek = 125;
+    }
+    else if (week === 21) {
+        realweek = 150;
+    }
+    else if (week === 22) {
+        realweek = 200;
+    }
+
+    const url = `${process.env.FOOTBALL_API_URL}?id=4391&s=${season}&r=${realweek}`;
+
+    const res = await fetch(url)
+    const data = await res.json();
+    return data['events'];
 };

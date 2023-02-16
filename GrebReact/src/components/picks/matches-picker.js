@@ -41,8 +41,6 @@ export const MatchesPicker = () => {
                     .then( res => res.json() )
                     .then( data => {
                         if (setup) {
-                            console.log(data);
-
                             setSeason(data.weekinfo.season);
                             setWeek(data.weekinfo.week);
                             setMaxweek(data.weekinfo.week);
@@ -71,7 +69,6 @@ export const MatchesPicker = () => {
     const handleChange = (event) => {
         var t = event.target;
         picks[t.name] = t.value;
-        //console.log(picks);
     };
 
     const handleSubmitPicks = (event) => {

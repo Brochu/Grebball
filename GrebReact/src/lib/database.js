@@ -33,6 +33,19 @@ export async function FindPoolerByEmail(e) {
     return poolers[0];
 }
 
+export async function FindPoolInfoByPooler(pooler) {
+    const mongo = await clientPromise;
+    const db = mongo.db(process.env.MONGO_DB_NAME);
+
+    const pools = await db.collection("pools").find({ _id: pooler['pool_id'] }).toArray();
+    const pool = pools[0];
+
+    delete pool['_id'];
+
+    const poolers = await db.collection("poolers").find({ pool_id: pooler['pool_id'] }).toArray();
+    return { pool, poolers };
+}
+
 export async function FindCurrentWeekForPooler(pooler) {
     const mongo = await clientPromise;
     const db = mongo.db(process.env.MONGO_DB_NAME);

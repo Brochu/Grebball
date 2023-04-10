@@ -85,3 +85,67 @@ export async function FindCurrentWeekForPooler(pooler) {
 
     return [maxseason, maxweek];
 }
+
+export async function FindPoolPicksForWeek(season, week, pooler, matchids) {
+    const mongo = await clientPromise;
+    const db = mongo.db(process.env.MONGO_DB_NAME);
+
+    console.log(season);
+    console.log(week);
+    console.log(pooler);
+    console.log(matchids);
+    //poolerids = []
+    //picks = []
+
+    //for p in poolers:
+    //    poolerids.append(str(p['_id']))
+    //    possiblepicks = list(DB.picks.find({
+    //        'pooler_id': p['_id'],
+    //        'season': season,
+    //        'week': week
+    //    }))
+
+    //    if len(possiblepicks) > 0:
+    //        picks.append(json.loads(possiblepicks[0]['pickstring']))
+    //    else:
+    //        picks.append({ m:'na' for m in matchids })
+
+    //return dict(zip(poolerids, picks))
+}
+
+export async function FindPoolPicksForSeason(season, pooler) {
+    const mongo = await clientPromise;
+    const db = mongo.db(process.env.MONGO_DB_NAME);
+
+    console.log(season);
+    console.log(pooler);
+    //picks = []
+
+    //for w in range(1, 23):
+    //    incomplete = False
+    //    picks.append({});
+
+    //    for p in poolers:
+    //        possiblepicks = list(DB.picks.find({
+    //            'pooler_id': p['_id'],
+    //            'season': season,
+    //            'week': w
+    //        }))
+
+    //        if len(possiblepicks) > 0:
+    //            picks[len(picks)-1][str(p['_id'])] = json.loads(possiblepicks[0]['pickstring'])
+    //        else:
+    //            incomplete = True
+
+    //    if incomplete:
+    //        break
+
+    //return picks
+}
+
+export async function InsertNewPicks(pickObj) {
+    const mongo = await clientPromise;
+    const db = mongo.db(process.env.MONGO_DB_NAME);
+
+    //DB.picks.insert_one(pickObj)
+}

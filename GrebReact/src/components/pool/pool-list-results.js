@@ -40,7 +40,7 @@ export const PoolListResults = () => {
 
         getSession().then(session => {
                 if (setup && session) {
-                    fetch(`${BACK_URI}/pools`, { headers: { 'pooler-email': session.user.email } })
+                    fetch(`api/pools`, { headers: { 'pooler-email': session.user.email } })
                         .then( res => res.json() )
                         .then( data => {
                             if (setup) {

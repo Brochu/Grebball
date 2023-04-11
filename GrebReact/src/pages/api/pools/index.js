@@ -77,3 +77,19 @@ function CalcPoolResults(matches, poolpicks, week) {
 
     //return results
 }
+
+function GetCorrectScore(week_num) {
+    let n = 0;
+    if (typeof week_num == string) {
+        n = int(week_num)
+    }
+    else {
+        n = week_num
+    }
+
+    if      (n == 19) { return 4; }
+    else if (n == 20) { return 6; }
+    else if (n == 21) { return 8; }
+    else if (n == 22) { return 10; }
+    else              { return 2; }
+}

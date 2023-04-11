@@ -58,7 +58,7 @@ export const PoolListResults = () => {
 
     const handleWeekChange = (pickedseason, pickedweek) => {
         getSession().then(session => {
-                fetch(`${BACK_URI}/pools/${pickedseason}/${pickedweek}`, {
+                fetch(`api/pools/${pickedseason}/${pickedweek}`, {
                     headers: { 'pooler-email': session.user.email }
                 })
                     .then( res => res.json() )

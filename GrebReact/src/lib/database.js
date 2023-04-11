@@ -106,8 +106,9 @@ export async function FindPoolPicksForWeek(season, week, poolers, matchids) {
             picks.push(JSON.parse(possiblepicks[0]['pickstring']))
         }
         else {
-            const empty = matchids.map((mid) => ({ [mid] : 'na' }));
-            picks.push(empty[0])
+            let empty = {};
+            matchids.map((mid) => empty[mid] = 'na');
+            picks.push(empty)
         }
     }
 

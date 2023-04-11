@@ -123,30 +123,34 @@ export async function FindPoolPicksForSeason(season, poolers) {
     const mongo = await clientPromise;
     const db = mongo.db(process.env.MONGO_DB_NAME);
 
-    console.log(season);
-    console.log(poolers);
-    //picks = []
+    let picks = []
 
-    //for w in range(1, 23):
-    //    incomplete = False
-    //    picks.append({});
+    for (let w = 1; w < 23; w++) {
+        let incomplete = false;
+        picks.push({});
 
-    //    for p in poolers:
-    //        possiblepicks = list(DB.picks.find({
-    //            'pooler_id': p['_id'],
-    //            'season': season,
-    //            'week': w
-    //        }))
+        for (let i in poolers) {
+            const p = poolers[i];
+            const possiblepicks = await db.collection("picks").find({
+                'pooler_id': p['_id'],
+                'season': season,
+                'week': w
+            }).toArray();
 
-    //        if len(possiblepicks) > 0:
-    //            picks[len(picks)-1][str(p['_id'])] = json.loads(possiblepicks[0]['pickstring'])
-    //        else:
-    //            incomplete = True
+            if (possiblepicks.length > 0) {
+                picks[picks.length - 1][String(p['_id'])] = JSON.parse(possiblepicks[0]['pickstring']);
+            }
+            else {
+                incomplete = true;
+            }
+        }
 
-    //    if incomplete:
-    //        break
+        if (incomplete) {
+            break;
+        }
+    }
 
-    //return picks
+    return picks
 }
 
 export async function InsertNewPicks(pickObj) {

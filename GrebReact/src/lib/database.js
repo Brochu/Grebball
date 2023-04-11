@@ -43,7 +43,7 @@ export async function FindPoolInfoByPooler(pooler) {
     delete pool['_id'];
 
     const poolers = await db.collection("poolers").find({ pool_id: pooler['pool_id'] }).toArray();
-    return { pool, poolers };
+    return [ pool, poolers ];
 }
 
 export async function FindCurrentWeekForPooler(pooler) {
@@ -86,31 +86,36 @@ export async function FindCurrentWeekForPooler(pooler) {
     return [maxseason, maxweek];
 }
 
-export async function FindPoolPicksForWeek(season, week, pooler, matchids) {
+export async function FindPoolPicksForWeek(season, week, poolers, matchids) {
     const mongo = await clientPromise;
     const db = mongo.db(process.env.MONGO_DB_NAME);
 
-    console.log(season);
-    console.log(week);
-    console.log(pooler);
-    console.log(matchids);
-    //poolerids = []
-    //picks = []
+    let poolerids = []
+    let picks = []
 
-    //for p in poolers:
-    //    poolerids.append(str(p['_id']))
-    //    possiblepicks = list(DB.picks.find({
-    //        'pooler_id': p['_id'],
-    //        'season': season,
-    //        'week': week
-    //    }))
+    for (let i in poolers) {
+        poolerids.push(poolers[i]['_id'].toString());
 
-    //    if len(possiblepicks) > 0:
-    //        picks.append(json.loads(possiblepicks[0]['pickstring']))
-    //    else:
-    //        picks.append({ m:'na' for m in matchids })
+        const possiblepicks = await db.collection("picks").find({
+            'pooler_id': poolers[i]['_id'],
+            'season': season,
+            'week': week
+        }).toArray();
 
-    //return dict(zip(poolerids, picks))
+        if (possiblepicks.length > 0) {
+            picks.push(JSON.parse(possiblepicks[0]['pickstring']))
+        }
+        else {
+            const empty = matchids.map((mid) => ({ [mid] : 'na' }));
+            picks.push(empty[0])
+        }
+    }
+
+    const res = {};
+    for (const i in poolerids) {
+        res[poolerids[i]] = picks[i];
+    }
+    return res;
 }
 
 export async function FindPoolPicksForSeason(season, pooler) {

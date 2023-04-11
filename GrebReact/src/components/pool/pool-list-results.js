@@ -74,7 +74,7 @@ export const PoolListResults = () => {
     const handleToggleShowSeason = (event, newvalue) => {
         if (newvalue) {
             getSession().then(session => {
-                fetch(`${BACK_URI}/pools/${weekdata['season']}`, {
+                fetch(`api/pools/${weekdata['season']}`, {
                     headers: { 'pooler-email': session.user.email }
                 })
                     .then( res => res.json() )

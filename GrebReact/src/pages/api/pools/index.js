@@ -24,7 +24,6 @@ async function CreateWeekData(season, week, pooler) {
     const [poolinfo, poolers] = await FindPoolInfoByPooler(pooler)
     const picks = await FindPoolPicksForWeek(season, week, poolers, matchids);
     const weekresults = CalcPoolResults( matchdata, picks, week);
-    console.log(weekresults);
 
     return {
         'pooldata': poolinfo,
@@ -55,36 +54,45 @@ function CalcPoolResults(matches, poolpicks, week) {
 
             const hpick = poolpicks[key][match['idEvent']] == GetTeamShortName(match['strHomeTeam']);
             const rightpick = (hwin && hpick) || (!hwin && !hpick);
-            console.log(hwin, tied, hpick, rightpick);
 
-    //        others = [ p[match['idEvent']] if i != poolerid else '' for i, p in poolpicks.items() ]
-    //        unique = not(picks[match['idEvent']] in others)
+            let others = [];
+            for (let o in poolpicks) {
+                if (o != key) {
+                    others.push(poolpicks[o][match['idEvent']]);
+                }
+            }
+            const unique = !others.includes(poolpicks[key][match['idEvent']])
 
-    //        if tied:
-    //            score = 1
-    //        elif rightpick and unique:
-    //            score = int(GetCorrectScore(week) * 1.5)
-    //        elif rightpick:
-    //            score = GetCorrectScore(week)
-    //        else:
-    //            score = 0
+            let score = 0;
+            if (tied) {
+                score = 1;
+            }
+            else if (rightpick && unique) {
+                score = Number(GetCorrectScore(week) * 1.5);
+            }
+            else if (rightpick) {
+                score = GetCorrectScore(week);
+            }
+            else {
+                score = 0;
+            }
 
-    //        res[match['idEvent']] = {
-    //            'pick': picks[match['idEvent']],
-    //            'score': score,
-    //        }
+            res[match['idEvent']] = {
+                'pick': poolpicks[key][match['idEvent']],
+                'score': score,
+            };
+            total += score
         }
-    }
-    //        total = total + score
 
-    //    results.append({ 'pid': poolerid, 'scores': res, 'total': total })
+        results.push({ 'pid': key, 'scores': res, 'total': total })
+    }
 
     return results
 }
 
 function GetCorrectScore(week_num) {
     let n = 0;
-    if (typeof week_num == string) {
+    if (typeof week_num == String) {
         n = int(week_num)
     }
     else {

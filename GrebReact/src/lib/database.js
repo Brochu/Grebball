@@ -119,12 +119,12 @@ export async function FindPoolPicksForWeek(season, week, poolers, matchids) {
     return res;
 }
 
-export async function FindPoolPicksForSeason(season, pooler) {
+export async function FindPoolPicksForSeason(season, poolers) {
     const mongo = await clientPromise;
     const db = mongo.db(process.env.MONGO_DB_NAME);
 
     console.log(season);
-    console.log(pooler);
+    console.log(poolers);
     //picks = []
 
     //for w in range(1, 23):

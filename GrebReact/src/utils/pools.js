@@ -1,4 +1,4 @@
-import { FindPoolInfoByPooler, FindPoolPicksForWeek } from '../lib/database'
+import { FindPoolInfoByPooler, FindPoolPicksForWeek, FindPoolPicksForSeason } from '../lib/database'
 import { GetWeek, GetTeamShortName } from './football'
 
 export async function CreateWeekData(season, week, pooler) {
@@ -18,6 +18,30 @@ export async function CreateWeekData(season, week, pooler) {
         'weekdata': {'season': season, 'week': week},
         'matches': matchdata,
         'results': weekresults,
+    };
+}
+
+export async function CreateSeasonData(season, pooler) {
+    const [poolinfo, poolers] = await FindPoolInfoByPooler(pooler)
+    let names = {};
+    poolers.forEach((p) => names[String(p['_id'])] = p['name']);
+
+    const seasonpicks = await FindPoolPicksForSeason(season, poolers)
+    console.log(seasonpicks);
+    //results = [ CalcPoolResults(GetWeek(season, w+1), picks, w+1) for w, picks in enumerate(seasonPicks) ]
+    //totals = [ { res['pid'] : res['total'] for res in result } for w, result in enumerate(results) ]
+    //fulltotals = { str(pooler['_id']) : 0 for pooler in poolers }
+
+    //for t in totals:
+    //    for pid, score in t.items():
+    //        fulltotals[pid] = fulltotals[pid] + score
+
+    return {
+        'pooldata': poolinfo,
+        'poolernames': names,
+        'seasoninfo': season,
+        'totals': [],
+        'fulltotals': {},
     };
 }
 

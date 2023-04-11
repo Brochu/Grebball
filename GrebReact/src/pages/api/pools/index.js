@@ -22,12 +22,15 @@ async function CreateWeekData(season, week, pooler) {
     const matchids = matchdata.map((m) => m['idEvent']);
 
     const [poolinfo, poolers] = await FindPoolInfoByPooler(pooler)
+    let names = {};
+    poolers.forEach((p) => names[String(p['_id'])] = p['name']);
+
     const picks = await FindPoolPicksForWeek(season, week, poolers, matchids);
     const weekresults = CalcPoolResults( matchdata, picks, week);
 
     return {
         'pooldata': poolinfo,
-        'poolernames': [],
+        'poolernames': names,
         'weekdata': {'season': season, 'week': week},
         'matches': matchdata,
         'results': weekresults,

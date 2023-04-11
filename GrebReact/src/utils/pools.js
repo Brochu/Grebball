@@ -29,7 +29,8 @@ export async function CreateSeasonData(season, pooler) {
     const seasonpicks = await FindPoolPicksForSeason(season, poolers)
     let results = [];
     for (let w in seasonpicks) {
-        results.push(CalcPoolResults(GetWeek(season, w+1), seasonpicks[w], w+1));
+        const matchdata = await GetWeek(season, w+1);
+        results.push(CalcPoolResults(matchdata, seasonpicks[w], w+1));
     }
 
     let totals = [];
@@ -39,18 +40,21 @@ export async function CreateSeasonData(season, pooler) {
         result.forEach((r) => temp[r['pid']] = 0);
         totals.push(temp);
     }
-    //fulltotals = { str(pooler['_id']) : 0 for pooler in poolers }
+    let fulltotals = {};
+    poolers.forEach((p) => fulltotals[String(p['_id'])] = 0);
 
-    //for t in totals:
-    //    for pid, score in t.items():
-    //        fulltotals[pid] = fulltotals[pid] + score
+    for (let i in totals) {
+        for (let p in totals[i]) {
+            fulltotals[p] += totals[i][p];
+        }
+    }
 
     return {
         'pooldata': poolinfo,
         'poolernames': names,
         'seasoninfo': season,
-        'totals': [],
-        'fulltotals': {},
+        'totals': totals,
+        'fulltotals': fulltotals,
     };
 }
 

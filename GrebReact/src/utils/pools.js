@@ -27,9 +27,18 @@ export async function CreateSeasonData(season, pooler) {
     poolers.forEach((p) => names[String(p['_id'])] = p['name']);
 
     const seasonpicks = await FindPoolPicksForSeason(season, poolers)
-    console.log(seasonpicks);
-    //results = [ CalcPoolResults(GetWeek(season, w+1), picks, w+1) for w, picks in enumerate(seasonPicks) ]
-    //totals = [ { res['pid'] : res['total'] for res in result } for w, result in enumerate(results) ]
+    let results = [];
+    for (let w in seasonpicks) {
+        results.push(CalcPoolResults(GetWeek(season, w+1), seasonpicks[w], w+1));
+    }
+
+    let totals = [];
+    for (let w in results) {
+        const result = results[w];
+        let temp = {};
+        result.forEach((r) => temp[r['pid']] = 0);
+        totals.push(temp);
+    }
     //fulltotals = { str(pooler['_id']) : 0 for pooler in poolers }
 
     //for t in totals:

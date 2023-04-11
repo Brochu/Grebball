@@ -5,7 +5,7 @@ import {
     FindPoolPicksForWeek
 } from '../../../lib/database';
 
-import { GetWeek } from '../../../utils/football'
+import { GetWeek, GetTeamShortName } from '../../../utils/football'
 
 export default async function handler(req, res) {
     const e = req.headers['pooler-email'];
@@ -24,6 +24,7 @@ async function CreateWeekData(season, week, pooler) {
     const [poolinfo, poolers] = await FindPoolInfoByPooler(pooler)
     const picks = await FindPoolPicksForWeek(season, week, poolers, matchids);
     const weekresults = CalcPoolResults( matchdata, picks, week);
+    console.log(weekresults);
 
     return {
         'pooldata': poolinfo,
@@ -35,24 +36,26 @@ async function CreateWeekData(season, week, pooler) {
 }
 
 function CalcPoolResults(matches, poolpicks, week) {
-    //TODO: Convert python logic to js
-    return { };
+    let results = []
 
-    //results = []
+    for (let key in poolpicks) {
+        let total = 0;
+        let res = {};
 
-    //for poolerid, picks in poolpicks.items():
-    //    total = 0
-    //    res = {}
+        for (let i in matches) {
+            const match = matches[i];
 
-    //    for match in matches:
-    //        hscore = int(match['intHomeScore']) if match['intHomeScore'] is not None else 0
-    //        ascore = int(match['intAwayScore']) if match['intAwayScore'] is not None else 0
+            let hscore = 0;
+            if (match['intHomeScore']) { hscore = Number(match['intHomeScore']); }
+            let ascore = 0;
+            if (match['intAwayScore']) { ascore = Number(match['intAwayScore']); }
 
-    //        hwin = hscore > ascore
-    //        tied = hscore == ascore
+            const hwin = hscore > ascore;
+            const tied = hscore == ascore;
 
-    //        hpick = picks[match['idEvent']] == GetTeamShortName(match['strHomeTeam'])
-    //        rightpick = (hwin and hpick) or (not(hwin) and not(hpick))
+            const hpick = poolpicks[key][match['idEvent']] == GetTeamShortName(match['strHomeTeam']);
+            const rightpick = (hwin && hpick) || (!hwin && !hpick);
+            console.log(hwin, tied, hpick, rightpick);
 
     //        others = [ p[match['idEvent']] if i != poolerid else '' for i, p in poolpicks.items() ]
     //        unique = not(picks[match['idEvent']] in others)
@@ -70,12 +73,13 @@ function CalcPoolResults(matches, poolpicks, week) {
     //            'pick': picks[match['idEvent']],
     //            'score': score,
     //        }
-
+        }
+    }
     //        total = total + score
 
     //    results.append({ 'pid': poolerid, 'scores': res, 'total': total })
 
-    //return results
+    return results
 }
 
 function GetCorrectScore(week_num) {

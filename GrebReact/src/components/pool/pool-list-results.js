@@ -19,8 +19,6 @@ import { PoolMatchEntry } from './pool-match-entry';
 import { WeekPicker } from '../week-picker'
 import { TeamPick } from '../team-pick'
 
-import { BACK_URI } from '../../lib/backend';
-
 import { GetWeekLongName } from '../../utils/football'
 
 export const PoolListResults = () => {

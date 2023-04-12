@@ -1,9 +1,19 @@
 import { GetWeek } from '../../../../utils/football'
 
 export default async function handler(req, res) {
-    const { param } = req.query;
-    console.log(param);
+    const [seasonstr, weekstr] = req.query.param;
+    const season = Number(seasonstr);
+    const week = Number(weekstr);
 
-    //TODO: Implement the rest of this logic
-    res.status(200).json({ });
+    const weekinfo = {
+        'season': season,
+        'week': week,
+    };
+
+    const weekdata = await GetWeek(season, week);
+
+    res.status(200).json({
+        'weekinfo': weekinfo,
+        'weekdata': weekdata,
+    });
 }

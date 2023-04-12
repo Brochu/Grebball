@@ -56,7 +56,7 @@ export const MatchesPicker = () => {
     }, []);
 
     const handleWeekChange = (pickedseason, pickedweek) => {
-        fetch(`${BACK_URI}/picks/new/${pickedseason}/${pickedweek}`)
+        fetch(`api/picks/new/${pickedseason}/${pickedweek}`)
             .then( res => res.json() )
             .then( data => {
                 setSeason(data.weekinfo.season);

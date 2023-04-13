@@ -85,7 +85,7 @@ export const MatchesPicker = () => {
         payload['week'] = week;
         payload['pooler-email'] = session.user.email;
 
-        fetch(`${BACK_URI}/picks/create`, {
+        fetch(`api/picks/create`, {
             method: 'post',
             body: JSON.stringify(payload),
             headers: {

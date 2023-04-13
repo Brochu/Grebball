@@ -157,5 +157,5 @@ export async function InsertNewPicks(pickObj) {
     const mongo = await clientPromise;
     const db = mongo.db(process.env.MONGO_DB_NAME);
 
-    //DB.picks.insert_one(pickObj)
+    db.collection("picks").insertOne(pickObj);
 }
